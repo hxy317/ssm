@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>登陆</title>
+<link rel="shortcut icon" href="/SSMall/images/head.jpeg" type="image/x-icon">
+<link href="/SSMall/styles/bootstrap/bootstrap.min.css" rel="stylesheet">
+<link href="/SSMall/styles/login/login.css" rel="stylesheet">
+<link href="/SSMall/js/layer/skin/default/layer.css" rel="stylesheet" id="layuicss-skinlayercss"></head>
+<script type="text/javascript" src="/SSMall/js/jquery.min.js"></script>
+<script type="text/javascript" src="/SSMall/js/vue.js"></script>
+<script type="text/javascript" src="/SSMall/js/bootstrap/bootstrap.min.js"></script>
+<script type="text/javascript" src="/SSMall/js/layer/layer.js"></script>
+<script type="text/javascript" src="/SSMall/js/common/md5.js"></script>
+<script type="text/javascript" src="/SSMall/js/validate/jquery.validate.min.js"></script>
+</head>
+<body class="signin" >
+    <div class="signinpanel" id = "signinpanel">
+        <div class="row">
+            <div class="col-sm-12">
+                <form method="post" id="documentForm">
+                    <h4 class="font_white text-center">师生作业交流平台</h4>
+                    <input type="text" id="j_username" name="j_username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="form-control uname" placeholder="请输入学号/工号" required="" minlength="5">
+                    <input type="password" id = "j_password" name="j_password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="pwd form-control pword m-b" placeholder="请输入密码" required="" minlength="6">
+                    <br>
+                    <a class="btn btn-success btn-block font_white" style="background-color:#959da5;border: 0;" onclick="login()">登录</a>
+                    <a href="/SSMall/views/register.html" class="btn btn-success btn-block font_white" style="background-color:#adb1b5;border: 0;" id="register">注册</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript">
+	var baseUrl = "http://localhost:8080/SSMall";
+	if(window.top !== window.self){
+		window.top.location = window.location;
+	}
+	$(function(){
+		//回车登录
+		$("body").keydown(function() {
+	         if (event.keyCode == "13") {
+	        	 login();
+	         }
+	    });
+	});
+	function login(){
+		console.log("login..");
+		if (validateForm()) {
+			var username = $("#j_username").val();
+			var password = $("#j_password").val();
+			var param = {
+					username : username,
+					password : password
+			}
+			
+			var url = baseUrl+"/user/login";
+			$.ajax({
+	   	        type: "POST",
+	   	        url: url,
+	   	        data : param,
+	   	        dataType:"json",
+	   	        success: function(resultData){
+	   				if(resultData.state==0){//查询成功
+	   					if(resultData.data="student"){//学生登陆 跳转学生页
+	   						window.location.href = baseUrl + "/views/student.html?username="+username;
+	   					}else{//教师登陆 跳转教师页
+	   						window.location.href = baseUrl + "/views/teacher.html";
+	   					}
+	   				
+	   				 }else{//查询失败或账号不存在
+	   					layer.alert('您未注册，请先注册', {
+	   						  icon: 0,
+	   						  skin: 'layer-ext-moon'
+	   						});
+	   				 }           	 
+	   	        }
+	   	    });
+		}
+	}
+	//表单验证
+	function validateForm(){
+	   return $("#documentForm").validate({
+		    messages: {
+		    	j_username: {
+		    		required:"账号不允许为空",
+		    		minlength:"账号至少为6位"
+		    	},
+		    	j_password: {
+		    		required:"密码不允许为空",
+		    		minlength:"密码至少为6位"
+		    	},
+		    }
+		}).form();
+	}
+</script>
+</html>

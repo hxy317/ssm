@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.working.dao.TeacherDAO">
+	<resultMap id="BaseResultMap" type="com.working.entity.Teacher">
+		<id column="id" property="id"></id>
+		<result column="num" property="num" />
+		<result column="password" property="password" />
+		<result column="name" property="name" />
+		<result column="sex" property="sex" />
+		<result column="phone" property="phone" />
+		<result column="mail" property="mail" />
+	</resultMap>
+	
+	<sql id="BaseColumnList">
+		id as id,
+		num as num,
+		password as password,
+		name as name,
+		sex as sex,
+		phone as phone,
+		mail as mail
+	</sql>
+
+	<sql id="BaseCustomQueryCondition">
+		<if test="id != null">
+			and id=#{id}
+		</if>	
+		<if test="num != null">
+			and num=#{num}
+		</if>
+		<if test="password != null">
+			and password=#{password}
+		</if>	
+		<if test="name != null">
+			and name=#{name}
+		</if>	
+		<if test="sex != null">
+			and sex=#{sex}
+		</if>	
+		<if test="phone != null">
+			and phone=#{phone}
+		</if>	
+		<if test="mail != null">
+			and mail=#{mail}
+		</if>	
+	</sql>
+
+	<insert id="insert" parameterType="com.working.entity.Teacher" >
+    	insert into teacher
+    		(id, num, password, name, sex, phone, mail) 
+    	values
+    		(#{id}, #{num}, #{password}, #{name}, #{sex}, #{phone}, #{mail})
+  	</insert>
+
+  	<insert id="insertList" parameterType="java.util.List" >
+    	insert into teacher
+    		(id, num, password, name, sex, phone, mail) 
+    	values
+    	<foreach collection="list" index="index" item="item" separator=",">
+    		(#{item.id}, #{item.num}, #{item.password}, #{item.name}, #{item.sex}, #{item.phone}, #{item.mail})
+    	</foreach>
+  	</insert>
+
+  	<update id="delete" parameterType="java.lang.String">
+		update teacher set is_delete=0 where id = #{id}
+    </update>
+
+  	<update id="update" parameterType="com.working.entity.Teacher">
+		update teacher set
+		num=#{num}, password=#{password}, name=#{name}, sex=#{sex}, phone=#{phone}, mail=#{mail}
+		where id = #{id} and is_delete=1
+	</update>
+	
+	<update id="updateIfNotNull" parameterType="com.working.entity.Teacher">
+		update teacher set
+		<if test="num != null">
+			num=#{num}, 
+		</if>
+		<if test="password != null">
+			and password=#{password},
+		</if>
+		<if test="name != null">
+			name=#{name}, 
+		</if>
+		<if test="sex != null">
+			sex=#{sex}, 
+		</if>
+		<if test="phone != null">
+			phone=#{phone}, 
+		</if>
+		<if test="mail != null">
+			mail=#{mail}
+		</if>
+		where id = #{id} and is_delete=1
+	</update>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select 
+	    <include refid="BaseColumnList" />
+	    from teacher
+	    where 
+			id = #{id}
+  	</select>
+
+  	<select id="selectList" resultMap="BaseResultMap" parameterType="com.working.entity.Teacher">
+	    select 
+	    <include refid="BaseColumnList" />
+	    from teacher
+	    where 1=1
+	    <include refid="BaseCustomQueryCondition" />
+  	</select>
+
+
+	
+</mapper>

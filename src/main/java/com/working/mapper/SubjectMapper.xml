@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.working.dao.SubjectDAO">
+	<resultMap id="BaseResultMap" type="com.working.entity.Subject">
+		<id column="id" property="id"></id>
+		<result column="sub_num" property="subNum" />
+		<result column="sub_name" property="subName" />
+		<result column="teacher_num" property="teacherNum" />
+	</resultMap>
+	
+	<sql id="BaseColumnList">
+		id as id,
+		sub_num as subNum,
+		sub_name as subName,
+		teacher_num as teacherNum
+	</sql>
+
+	<sql id="BaseCustomQueryCondition">
+		<if test="id != null">
+			and id=#{id}
+		</if>	
+		<if test="subNum != null">
+			and sub_num=#{subNum}
+		</if>	
+		<if test="subName != null">
+			and sub_name=#{subName}
+		</if>	
+		<if test="teacherNum != null">
+			and teacher_num=#{teacherNum}
+		</if>	
+	</sql>
+
+	<insert id="insert" parameterType="com.working.entity.Subject" >
+    	insert into subject
+    		(id, sub_num, sub_name, teacher_num) 
+    	values
+    		(#{id}, #{subNum}, #{subName}, #{teacherNum})
+  	</insert>
+
+  	<insert id="insertList" parameterType="java.util.List" >
+    	insert into subject
+    		(id, sub_num, sub_name, teacher_num) 
+    	values
+    	<foreach collection="list" index="index" item="item" separator=",">
+    		(#{item.id}, #{item.subNum}, #{item.subName}, #{item.teacherNum})
+    	</foreach>
+  	</insert>
+
+  	<update id="delete" parameterType="java.lang.String">
+		update subject set is_delete=0 where id = #{id}
+    </update>
+
+  	<update id="update" parameterType="com.working.entity.Subject">
+		update subject set
+		sub_num=#{subNum}, sub_name=#{subName}, teacher_num=#{teacherNum}
+		where id = #{id} and is_delete=1
+	</update>
+	
+	<update id="updateIfNotNull" parameterType="com.working.entity.Subject">
+		update subject set
+		<if test="subNum != null">
+			sub_num=#{subNum}, 
+		</if>
+		<if test="subName != null">
+			sub_name=#{subName}, 
+		</if>
+		<if test="teacherNum != null">
+			teacher_num=#{teacherNum}
+		</if>
+		where id = #{id} and is_delete=1
+	</update>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select 
+	    <include refid="BaseColumnList" />
+	    from subject
+	    where 
+			id = #{id}
+  	</select>
+
+  	<select id="selectList" resultMap="BaseResultMap" parameterType="com.working.entity.Subject">
+	    select 
+	    <include refid="BaseColumnList" />
+	    from subject
+	    where 1=1
+	    <include refid="BaseCustomQueryCondition" />
+  	</select>
+
+
+	
+</mapper>
