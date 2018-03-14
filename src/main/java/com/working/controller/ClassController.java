@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,8 +39,7 @@ public class ClassController {
      * @throws Exception e
      */
     @RequestMapping("/list")
-    public Map<String, Object> classList() {
-        
+    public Map<String, Object> classList(HttpServletRequest request) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         List<Class> classLst = classService.selectList(new Class());
         resultMap.put("data", classLst);
@@ -46,5 +48,18 @@ public class ClassController {
         
         return resultMap;
         
+    }
+    
+    public static void main(String[] args) {
+		
+    	String str = "abcdefg";
+    	String str3 = exchange(str);
+    	System.out.println(str3);
+	}
+    public static String exchange(String str) {
+    	if(str!=null&&str.length()>0) {
+    		return exchange(str.substring(1))+str.charAt(0);
+    	}
+    	return str;
     }
 }
