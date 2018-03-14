@@ -62,10 +62,10 @@
 	   	        dataType:"json",
 	   	        success: function(resultData){
 	   				if(resultData.state==0){//查询成功
-	   					if(resultData.data="student"){//学生登陆 跳转学生页
+	   					if(resultData.data=="student"){//学生登陆 跳转学生页
 	   						window.location.href = baseUrl + "/views/student.html?username="+username;
 	   					}else{//教师登陆 跳转教师页
-	   						window.location.href = baseUrl + "/views/teacher.html";
+	   						window.location.href = baseUrl + "/views/teacher.html?username="+username;
 	   					}
 	   				
 	   				 }else{//查询失败或账号不存在
