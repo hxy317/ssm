@@ -55,6 +55,8 @@ public class WorkController {
             work.setSubName(subject);
             String stuName = request.getParameter("stuName");
             work.setStuName(stuName);
+            if (true)
+                return TableData.bulid(0, null);
             // 分页信息
             int pageNumber = NumberUtils.toInt(request.getParameter("pageNumber"), 1);
             int pageSize = NumberUtils.toInt(request.getParameter("pageSize"), 10);
