@@ -28,7 +28,7 @@
 					<div class="form-inline">
 						<label class="control-label">批改状态：</label>
 						<div class="form-group">
-							<select class="form-control selectpicker" v-model="job.state" data-live-search="false"
+							<select class="form-control selectpicker" name="state" v-model="job.state" data-live-search="false"
 								data-size="10">
 								<option data-tokens="全部" value="9999" selected>全部</option>
 								<option data-tokens="未批改" value="1">未批改</option>
@@ -37,7 +37,7 @@
 						</div>
 						<label class="control-label">班级：</label>
 						<div class="form-group">
-							<select class="form-control" v-model="job.grade">  
+							<select class="form-control" name="grade" v-model="job.grade">  
 								  <option v-for="grade in grades" v-bind:value="grade.value">  
 								    {{ grade.text }}  
 								  </option>  
@@ -45,11 +45,15 @@
 						 </div>
 						 <label class="control-label">科目：</label>
 						<div class="form-group">
-							<select class="form-control" v-model="job.subject">  
+							<select class="form-control" name="subject" v-model="job.subject">  
 								  <option v-for="subject in subjects" v-bind:value="subject.value">  
 								    {{ subject.text }}  
 								  </option>  
 								</select> 
+						 </div>
+						 <label class="control-label">学生姓名：</label>
+						<div class="form-group">
+							<input type="text" class="form-control" name="stuName" v-model ="job.stuName" />
 						 </div>
 						 <button type="button" class="btn btn-primary" @click="search" >搜索 </button>
 						
@@ -59,7 +63,7 @@
 			<table id="table" data-classes="table table-hover" 
 				data-pagination="true" data-toggle="table"
 				data-query-params="queryParams"
-				data-url="localhost:8080/SSMall/working/queryWorkList"
+				data-url="http://localhost:8080/SSMall/working/queryWorkList"
 				data-id-field="id">
 				<thead>
 					<tr>
@@ -151,7 +155,7 @@ var vm = new Vue({
     		$('[data-toggle="table"]').bootstrapTable('resetView');
     	});
     	//初始化班级信息
-    	initStuClass();
+    	//initStuClass();
       }
 });
 
