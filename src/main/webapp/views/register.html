@@ -13,6 +13,7 @@
 <script type="text/javascript" src="/SSMall/js/validate/bootstrapValidator.js"></script>
 <script type="text/javascript" src="/SSMall/js/validate/zh_CN.js"></script>
 <script type="text/javascript" src="/SSMall/js/layer/layer.js"></script>
+<script type="text/javascript" src="/SSMall/js/common.js"></script>
 <title>注册</title>
 </head>
 <body>
@@ -92,12 +93,9 @@
 										<input type="text" class="form-control" name="mail" v-model ="user.mail" placeholder="请输入邮箱"/>
 									</div>
 								</div>
-									
 								<div style="text-align: center;">
-			                          <button type="button" class="btn btn-primary" @click="submit" >  
-			                              	确认
-			                          </button>
-			                          <a href="/SSMall/views/login.html" class="btn btn-default" style="margin-left:30px">取消</a>
+			                        <button type="button" class="btn btn-primary" @click="submit" >确认</button>
+			                    	<button type="button" class="btn btn-default back" style="margin-left:30px">取消</button>
 								</div>
 					</form>
 			</div>
@@ -114,7 +112,6 @@ var vm = new Vue({
         options:[]
     },
     methods: {
-    	
     	userExchage :function(){
     		userInfo();
     	},
@@ -140,9 +137,8 @@ var vm = new Vue({
 	   				if(resultData.state==0){//保存成功
 	   					window.location.href = baseUrl + "/views/login.html";
 	   				 }else{
-	   					layer.alert('注册失败，请重新提交', {
+	   					layer.msg('注册失败，请重新提交', {
 	   						  icon: 0,
-	   						  skin: 'layer-ext-moon'
 	   						});
 	   				 }           	 
 	   	        }
@@ -172,13 +168,15 @@ function initStuClass(){
 					var option = {}
 					option.text = data[i].className;
 					option.value = data[i].classNum;
-					vm.user.stuClass = data[i].classNum;
+					vm.user.grade = data[i].classNum;
 					options.push(option);
 				}
 				vm.options = options;
 			 }else{
 				 //查询失败
-				 alert(resultData.message);
+				 layer.msg(resultData.message, {
+	   				icon: 0,
+	   			});
 			 }           	 
         }
     });

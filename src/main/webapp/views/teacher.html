@@ -55,8 +55,8 @@
 						<div class="form-group">
 							<input type="text" class="form-control" name="stuName" v-model ="job.stuName" />
 						 </div>
-						 <button type="button" class="btn btn-primary" @click="search" >搜索 </button>
-						
+						 <button type="button" class="btn btn-primary" @click="search" >搜索</button>
+						  <a href="/SSMall/views/working.html" class="btn btn-primary" id="addWorking">新增作业</a>
 					</div>
 				</form>
 			</div>
@@ -85,20 +85,6 @@
 	</div>
 </body>
 <script type="text/javascript">
-	//按状态查询
-	/* $("#accountStatus").change(function() {
-		$("#table").bootstrapTable('refresh');
-	})
-		
-	// 搜索
-	$("#search").click(function(){
-		$("#table").bootstrapTable('refresh');
-	}); */
-
-	/* $(window).resize(function() {
-		$('[data-toggle="table"]').bootstrapTable('resetView');
-	}); */
-
 var baseUrl = "http://localhost:8080/SSMall";
 var vm = new Vue({
     el:'#teacherVue',
@@ -108,44 +94,6 @@ var vm = new Vue({
     	subjects:[]
     },
     methods: {
-    	//序号
-    	rowNoFormatter :function(value, row, index){
-    		var options = $("#table").bootstrapTable('getOptions');  
-    	    return options.pageSize * (options.pageNumber - 1) + index + 1;
-    	},
-    	//柔和灰（text-muted）、主要蓝（text-primary）、成功绿（text-success）、信息蓝（text-info）、警告黄（text-warning）、危险红（text-danger）
-    	//作业状态
-    	stateFormatter :function(value, row, index) {
-    		if (value == "1") {
-    			return "<span class='text-primary'>未批改</span>";
-    		} else{
-    			return "<span class='text-success'>已批改</span>";
-    		}
-    	},
-    	//班级信息
-    	classNameFormatter :function(value, row, index) {
-    		if (value == "1") {
-    			return "<span class='text-info'>快递</span>";
-    		} else if (value == "2") {
-    			return "<span class='text-info'>EMS</span>";
-    		} else if (value == "3") {
-    			return "<span class='text-info'>平邮</span>";
-    		} else {
-    			return "<span class='text-info'>商户自有物流</span>";
-    		}
-    	},
-    	//科目信息
-    	deliveryTypeFormatter :function(value, row, index) {
-    		if (value == "1") {
-    			return "<span class='text-info'>快递</span>";
-    		} else if (value == "2") {
-    			return "<span class='text-info'>EMS</span>";
-    		} else if (value == "3") {
-    			return "<span class='text-info'>平邮</span>";
-    		} else {
-    			return "<span class='text-info'>商户自有物流</span>";
-    		}
-    	},
     	search :function(){
     		$("#table").bootstrapTable('refresh');
     	}
@@ -155,10 +103,13 @@ var vm = new Vue({
     		$('[data-toggle="table"]').bootstrapTable('resetView');
     	});
     	//初始化班级信息
-    	//initStuClass();
+    	initStuClass();
+    	//初始化科目信息
+    	initSubject();
       }
 });
 
+/* 初始化班级信息 */
 function initStuClass(){
 	var url = baseUrl+"/class/list";
 	 $.ajax({
@@ -168,6 +119,12 @@ function initStuClass(){
         success: function(resultData){
 			if(resultData.state==0){//查询成功
 				var options = [];
+				var flag={
+						text : "全部",
+						value : ""
+				}
+				options.push(flag);
+				vm.job.grade = "";
 			 	var data = resultData.data;
 				for (var i = 0; i < data.length; i++) {
 					var option = {}
@@ -178,20 +135,69 @@ function initStuClass(){
 				vm.grades = options;
 			 }else{
 				 //查询失败
-				 alert(resultData.message);
+				 layer.msg(resultData.message, {
+		   				icon: 0,
+		   			});
+			 }           	 
+        }
+    });
+}
+/* 初始化科目信息 */
+function initSubject(){
+	var url = baseUrl+"/subject/list";
+	 $.ajax({
+        type: "GET",
+        url: url,
+        dataType:"json",
+        success: function(resultData){
+			if(resultData.state==0){//查询成功
+				var options = [];
+				var flag={
+						text : "全部",
+						value : ""
+				}
+				options.push(flag);
+				vm.job.subject = "";
+			 	var data = resultData.data;
+				for (var i = 0; i < data.length; i++) {
+					var option = {}
+					option.text = data[i].subName;
+					option.value = data[i].subNum;
+					options.push(option);
+				}
+				
+				vm.subjects = options;
+			 }else{
+				 //查询失败
+				 layer.msg(resultData.message, {
+		   				icon: 0,
+		   			});
 			 }           	 
         }
     });
 }
 
-/* 判断注册的信息为学生还是教师 */
-function userInfo(){
-	var user = $("#user").val();
-	if(user=="1"){//为学生
-		$("#student").show();
-	}else{//为教师
-		$("#student").hide();
+//序号
+function rowNoFormatter(value, row, index){
+	var options = $("#table").bootstrapTable('getOptions');  
+    return options.pageSize * (options.pageNumber - 1) + index + 1;
+}
+//柔和灰（text-muted）、主要蓝（text-primary）、成功绿（text-success）、信息蓝（text-info）、警告黄（text-warning）、危险红（text-danger）
+//作业状态
+function stateFormatter(value, row, index) {
+	if (value == "1") {
+		return "<span class='text-primary'>未批改</span>";
+	} else{
+		return "<span class='text-success'>已批改</span>";
 	}
+}
+//班级信息
+function classNameFormatter(value, row, index) {
+	return "<span class='text-info'>"+value+"</span>";
+}
+//科目信息
+function deliveryTypeFormatter(value, row, index) {
+	return "<span class='text-info'>"+value+"</span>";
 }
 </script>
 </html>
