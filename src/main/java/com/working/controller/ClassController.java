@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,11 +30,9 @@ public class ClassController {
     private ClassService classService;
     
     /**
-     * 客服问题列表查询
+     * 班级列表查询
      * 
-     * @param pageSize 每页行数
-     * @param pageNumber 第几页
-     * @return JQPage 商品列表
+     * @param request request
      * @throws Exception e
      */
     @RequestMapping("/list")
@@ -48,18 +45,5 @@ public class ClassController {
         
         return resultMap;
         
-    }
-    
-    public static void main(String[] args) {
-		
-    	String str = "abcdefg";
-    	String str3 = exchange(str);
-    	System.out.println(str3);
-	}
-    public static String exchange(String str) {
-    	if(str!=null&&str.length()>0) {
-    		return exchange(str.substring(1))+str.charAt(0);
-    	}
-    	return str;
     }
 }

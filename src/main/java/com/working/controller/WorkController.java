@@ -17,6 +17,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.working.entity.Work;
 import com.working.service.WorkService;
+import com.working.util.DateTimeUtils;
 import com.working.util.MapAndBeanTransform;
 import com.working.util.TableData;
 
@@ -50,13 +51,11 @@ public class WorkController {
             String state = request.getParameter("state");
             work.setState(state);
             String grade = request.getParameter("grade");
-            work.setClassName(grade);
+            work.setClassNum(grade);
             String subject = request.getParameter("subject");
-            work.setSubName(subject);
+            work.setSubNum(subject);
             String stuName = request.getParameter("stuName");
             work.setStuName(stuName);
-            if (true)
-                return TableData.bulid(0, null);
             // 分页信息
             int pageNumber = NumberUtils.toInt(request.getParameter("pageNumber"), 1);
             int pageSize = NumberUtils.toInt(request.getParameter("pageSize"), 10);
@@ -68,6 +67,9 @@ public class WorkController {
             if (workList != null && workList.size() > 0) {
                 for (Work workList2 : workList) {
                     Map<String, Object> map = MapAndBeanTransform.beanToMap(workList2);
+                    String updateTime = DateTimeUtils.converTimestampToString(workList2.getUpdateTime(),
+                        "yyyy-MM-dd HH:mm");
+                    map.put("updateTime", updateTime);
                     list.add(map);
                 }
             }
