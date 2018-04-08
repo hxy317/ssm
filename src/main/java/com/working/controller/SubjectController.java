@@ -36,9 +36,28 @@ public class SubjectController {
      * @throws Exception e
      */
     @RequestMapping("/list")
-    public Map<String, Object> classList(HttpServletRequest request) {
+    public Map<String, Object> subjectList(HttpServletRequest request) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         List<Subject> subjectLst = subjectService.selectList(new Subject());
+        resultMap.put("data", subjectLst);
+        resultMap.put("msg", "查询成功");
+        resultMap.put("state", "0");
+        
+        return resultMap;
+        
+    }
+    /**
+     * 班级列表查询
+     * 
+     * @param request request
+     * @throws Exception e
+     */
+    @RequestMapping("/querySubjectByTeaId")
+    public Map<String, Object> querySubjectByTeaId(String teacherNum) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        Subject subject = new Subject();
+        subject.setTeacherNum(teacherNum);
+        List<Subject> subjectLst = subjectService.selectList(subject);
         resultMap.put("data", subjectLst);
         resultMap.put("msg", "查询成功");
         resultMap.put("state", "0");

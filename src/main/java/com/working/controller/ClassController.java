@@ -46,4 +46,23 @@ public class ClassController {
         return resultMap;
         
     }
+    /**
+     * 根据教师id查询代课班级信息
+     * 
+     * @param request request
+     * @throws Exception e
+     */
+    @RequestMapping("/queryClassByTeaId")
+    public Map<String, Object> queryClassByTeaId(String teacherNum) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        Class clazz = new Class();
+        clazz.setTeacherNum(teacherNum);
+        List<Class> classLst = classService.selectList(clazz);
+        resultMap.put("data", classLst);
+        resultMap.put("msg", "查询成功");
+        resultMap.put("state", "0");
+        
+        return resultMap;
+        
+    }
 }

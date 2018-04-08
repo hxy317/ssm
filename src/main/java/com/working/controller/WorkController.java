@@ -2,6 +2,7 @@
 package com.working.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.working.entity.Student;
 import com.working.entity.Work;
 import com.working.service.WorkService;
 import com.working.util.DateTimeUtils;
@@ -37,7 +39,7 @@ public class WorkController {
     private WorkService workService;
     
     /**
-     * 商品列表查询
+     * 作业列表查询
      * 
      * @param request
      * @throws Exception e
@@ -78,5 +80,27 @@ public class WorkController {
             e.printStackTrace();
         }
         return TableData.bulid(0, null);
+    }
+    
+    /**
+     * 保存作业
+     * 
+     * @param teacher 学生信息
+     * @return Map 保存结果
+     */
+    @RequestMapping("/save")
+    public Map<String, Object> stuRegister(Work work) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("data", "");
+        try {
+        	workService.insert(work);
+            resultMap.put("state", 0);
+            resultMap.put("msg", "保存成功");
+        } catch (Exception e) {
+            resultMap.put("state", -1);
+            resultMap.put("msg", "保存失败");
+        }
+        
+        return resultMap;
     }
 }
