@@ -56,7 +56,7 @@
 							<input type="text" class="form-control" name="stuName" v-model ="job.stuName" />
 						 </div>
 						 <button type="button" class="btn btn-primary" @click="search" >搜索</button>
-						  <a href="/SSMall/views/working.html" class="btn btn-primary" id="addWorking">新增作业</a>
+						 <button type="button" class="btn btn-primary" @click="addWorking" >发布作业</button>
 					</div>
 				</form>
 			</div>
@@ -86,6 +86,8 @@
 </body>
 <script type="text/javascript">
 var baseUrl = "http://localhost:8080/SSMall";
+var param = getUrlParam();
+var username = param.username;
 var vm = new Vue({
     el:'#teacherVue',
     data:{
@@ -96,6 +98,9 @@ var vm = new Vue({
     methods: {
     	search :function(){
     		$("#table").bootstrapTable('refresh');
+    	},
+    	addWorking :function(){
+    		window.location.href = baseUrl + "/views/working.html?username="+username;
     	}
     },
     mounted: function () {
@@ -198,6 +203,19 @@ function classNameFormatter(value, row, index) {
 //科目信息
 function deliveryTypeFormatter(value, row, index) {
 	return "<span class='text-info'>"+value+"</span>";
+}
+//获取Url参数
+function getUrlParam(){
+    var url = location.search; //获取url中"?"符后的字串   
+    var theRequest = new Object();   
+    if (url.indexOf("?") != -1) {   
+       var str = url.substr(1);   
+       strs = str.split("&");   
+       for(var i = 0; i < strs.length; i ++) {   
+          theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);   
+       }   
+    }   
+    return theRequest;   
 }
 </script>
 </html>
