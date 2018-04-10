@@ -2,6 +2,7 @@
 package com.working.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,4 +99,12 @@ public class StudentService {
         return studentMapper.selectList(student);
     }
     
+    /**
+     * 通过自定义非空字段获取记录集
+     * 
+     * @param work
+     */
+    public List<Student> queryStudents(Map<String, String> paramMap) {
+        return studentMapper.queryStudents(paramMap);
+    }
 }

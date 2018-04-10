@@ -1,7 +1,9 @@
 package com.working.dao;
 
 import java.util.List;
+import java.util.Map;
 
+import com.working.entity.Student;
 import com.working.entity.Work;
 
 /**
@@ -65,5 +67,5 @@ public interface WorkDAO{
 	 * @return  记录集
 	 */
 	List<Work> selectList(Work work);
-
+	
 }

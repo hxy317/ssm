@@ -118,6 +118,25 @@
 	    <include refid="BaseCustomQueryCondition" />
   	</select>
 
-
+	<select id="queryStudents" parameterType="java.util.Map" resultType="com.working.entity.Student">
+		SELECT
+			S.id,
+			S.`name`,
+			S.grade,
+			S.num,
+			S.sex,
+			S.phone,
+			S.mail
+		FROM
+			class C,
+			student S
+		<where>
+			S.grade = C.class_num
+			AND C.teacher_num = #{teacherNum}
+			<if test="classNum !=null">
+				AND C.class_num = #{classNum}
+			</if>
+		</where>
+	</select>
 	
 </mapper>

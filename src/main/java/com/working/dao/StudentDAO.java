@@ -1,6 +1,7 @@
 package com.working.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.working.entity.Student;
 
@@ -66,4 +67,10 @@ public interface StudentDAO{
 	 */
 	List<Student> selectList(Student student);
 
+	/**
+     * 通过自定义非空字段获取记录集
+     * 
+     * @param work
+     */
+	List<Student> queryStudents(Map<String, String> paramMap);
 }

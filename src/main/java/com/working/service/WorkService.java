@@ -1,12 +1,16 @@
 
 package com.working.service;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.working.dao.WorkDAO;
+import com.working.entity.Student;
 import com.working.entity.Work;
 import com.working.util.UUIDUtil;
 
@@ -29,7 +33,7 @@ public class WorkService {
      * 
      * @param work
      */
-    public void insert(Work work) throws Exception {
+    public void insert(Work work) {
         work.setId(UUIDUtil.generateUUID());
         workMapper.insert(work);
     }
