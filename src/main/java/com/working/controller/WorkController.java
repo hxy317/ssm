@@ -20,14 +20,15 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.working.entity.Student;
 import com.working.entity.Subject;
+import com.working.entity.Teacher;
 import com.working.entity.Work;
 import com.working.service.StudentService;
 import com.working.service.SubjectService;
+import com.working.service.TeacherService;
 import com.working.service.WorkService;
 import com.working.util.DateTimeUtils;
 import com.working.util.MapAndBeanTransform;
 import com.working.util.TableData;
-import com.working.util.UUIDUtil;
 
 /**
  * Work
@@ -50,6 +51,8 @@ public class WorkController {
     @Autowired
     private StudentService studentService;
     
+    @Autowired
+    private TeacherService teacherService;
     
     /**
      * 作业列表查询
@@ -64,13 +67,29 @@ public class WorkController {
             // 查询条件
             Work work = new Work();
             String state = request.getParameter("state");
-            work.setState(state);
+            if (state != null) {
+                work.setState(state);
+            }
             String grade = request.getParameter("grade");
-            work.setClassNum(grade);
+            if (grade != null) {
+                work.setClassNum(grade);
+            }
             String subject = request.getParameter("subject");
-            work.setSubNum(subject);
+            if (subject != null) {
+                work.setSubNum(subject);
+            }
             String stuName = request.getParameter("stuName");
-            work.setStuName(stuName);
+            if (stuName != null) {
+                work.setStuName(stuName);
+            }
+            String stuNum = request.getParameter("stuNum");
+            if (stuNum != null) {
+                work.setStuNum(stuNum);
+            }
+            String teacherNum = request.getParameter("teacherNum");
+            if (teacherNum != null) {
+                work.setTeacherNum(teacherNum);
+            }
             // 分页信息
             int pageNumber = NumberUtils.toInt(request.getParameter("pageNumber"), 1);
             int pageSize = NumberUtils.toInt(request.getParameter("pageSize"), 10);
@@ -83,9 +102,9 @@ public class WorkController {
                 for (Work workList2 : workList) {
                     Map<String, Object> map = MapAndBeanTransform.beanToMap(workList2);
                     String updateTime = "";
-                    if(workList2.getUpdateTime()!=null) {
-                    	updateTime = DateTimeUtils.converTimestampToString(workList2.getUpdateTime(),
-                                "yyyy-MM-dd HH:mm");
+                    if (workList2.getUpdateTime() != null) {
+                        updateTime = DateTimeUtils.converTimestampToString(workList2.getUpdateTime(),
+                            "yyyy-MM-dd HH:mm");
                     }
                     map.put("updateTime", updateTime);
                     list.add(map);
@@ -108,60 +127,59 @@ public class WorkController {
     public Map<String, Object> stuRegister(HttpServletRequest request) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("data", "");
-     // 查询条件
-        Work work = new Work();
+        // 查询条件
         String title = request.getParameter("title");
         String questions = request.getParameter("questions");
-        String subNum = request.getParameter("subNum");//科目
-        String classNum = request.getParameter("classNum");//班级
+        String subNum = request.getParameter("subNum");// 科目
+        String classNum = request.getParameter("classNum");// 班级
         String teacherNum = request.getParameter("teacherNum");
+        Teacher teacher = new Teacher();
+        teacher.setNum(teacherNum);
+        String teacherName = teacherService.selectList(teacher).get(0).getName();
         Map<String, String> paramMap = new HashMap<String, String>();
         paramMap.put("teacherNum", teacherNum);
-        //作业id
-        String publishUrl = UUIDUtil.generateUUID();
+        paramMap.put("classNum", classNum);
         try {
-        	if(!"999".equals(classNum)) {//该教师的所有班级 不是全选
-            	paramMap.put("classNum", classNum);
-            }
             List<Student> students = studentService.queryStudents(paramMap);
-            if("999".equals(subNum)) {//该教师代的所有科目
-            	Subject subject = new Subject();
-            	subject.setTeacherNum(teacherNum);
-            	List<Subject> subjects = subjectService.selectList(subject);
-            	for (Subject subject2 : subjects) {
-            		for (Student student : students) {
-        				Work newWork = new Work();
-        				newWork.setClassNum(student.getGrade());
-        				newWork.setState("0");
-        				newWork.setStuNum(student.getNum());
-        				newWork.setStuName(student.getName());
-        				newWork.setSubNum(subject2.getSubNum());
-        				newWork.setSubName(subject2.getSubName());
-        				newWork.setTeacherNum(teacherNum);
-        				newWork.setTitle(title);
-        				newWork.setPublishUrl(publishUrl);
-        				 work.setUpdateTime(new Timestamp(new Date().getTime()));
-        				workService.insert(newWork);
-        			}
-    			}
-            }else {
-            	for (Student student : students) {
-    				Work newWork = new Work();
-    				newWork.setClassNum(student.getGrade());
-    				newWork.setState("0");
-    				newWork.setStuNum(student.getNum());
-    				newWork.setStuName(student.getName());
-    				newWork.setSubNum(subNum);
-    				newWork.setTeacherNum(teacherNum);
-    				newWork.setTitle(title);
-    				newWork.setPublishUrl(publishUrl);
-    				newWork.setUpdateTime(new Timestamp(new Date().getTime()));
-    				workService.insert(newWork);
-    			}
+            if ("".equals(subNum)) {// 该教师代的所有科目
+                Subject subject = new Subject();
+                subject.setTeacherNum(teacherNum);
+                List<Subject> subjects = subjectService.selectList(subject);
+                for (Subject subject2 : subjects) {
+                    for (Student student : students) {
+                        Work work = new Work();
+                        work.setClassNum(student.getGrade());
+                        work.setState("1");
+                        work.setStuNum(student.getNum());
+                        work.setStuName(student.getName());
+                        work.setSubNum(subject2.getSubNum());
+                        work.setSubName(subject2.getSubName());
+                        work.setTeacherNum(teacherNum);
+                        work.setTeacherName(teacherName);
+                        work.setTitle(title);
+                        work.setPublishUrl(questions);
+                        work.setUpdateTime(new Timestamp(new Date().getTime()));
+                        workService.insert(work);
+                    }
+                }
+            } else {
+                for (Student student : students) {
+                    Work work = new Work();
+                    work.setClassNum(student.getGrade());
+                    work.setState("1");
+                    work.setStuNum(student.getNum());
+                    work.setStuName(student.getName());
+                    work.setSubNum(subNum);
+                    work.setTeacherNum(teacherNum);
+                    work.setTeacherName(teacherName);
+                    work.setTitle(title);
+                    work.setPublishUrl(questions);
+                    work.setUpdateTime(new Timestamp(new Date().getTime()));
+                    workService.insert(work);
+                }
             }
             
-            
-            //保存作业
+            // 保存作业
             resultMap.put("state", 0);
             resultMap.put("msg", "作业保存成功");
         } catch (Exception e) {
