@@ -4,152 +4,99 @@
 <meta charset="UTF-8">
 <link rel="shortcut icon" href="/SSMall/images/head.jpeg" type="image/x-icon">
 <link href="/SSMall/styles/bootstrap/bootstrap.min.css" rel="stylesheet">
+<link href="/SSMall/styles/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+<link href="/SSMall/styles/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
 <link href="/SSMall/js/layer/skin/default/layer.css" rel="stylesheet" id="layuicss-skinlayercss"></head>
 <script type="text/javascript" src="/SSMall/js/jquery.min.js"></script>
-<script type="text/javascript" src="/SSMall/js/vue.js"></script>
 <script type="text/javascript" src="/SSMall/js/bootstrap/bootstrap.min.js"></script>
+<script type="text/javascript" src="/SSMall/js/bootstrap-table/bootstrap-table.js"></script>
+<script type="text/javascript" src="/SSMall/js/bootstrap-select/bootstrap-select.min.js"></script>
 <script type="text/javascript" src="/SSMall/js/layer/layer.js"></script>
 <script type="text/javascript" src="/SSMall/js/validate/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/SSMall/js/vue.js"></script>
 <script type="text/javascript" src="/SSMall/js/common.js"></script>
-<title>学生页</title>
+<title>学生</title>
 </head>
 <body>
-	<div class="panel-body" id="register">
+	<div class="panel-body" id="teacherVue">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-	        	<h3 class="panel-title">用户注册</h3>
-	    	</div>
-	    	<div id="" style="padding: 10px 10px 0px 10px;">
-				<form class="form-horizontal" id="orderForm" method="post">
-								<div class="form-group">
-							 		<div class="col-md-4 control-label">注册用户：</div>
-								 	<div class="col-md-5">
-								  		<select class="form-control" name="user" id="user" @change="userExchage" >
-											<option value = "1">学生</option>
-											<option value = "2">教师</option>
-										</select>
-								 	</div>
-							 	</div>
-							 	<div class="form-group">
-										<div class="col-sm-4 control-label">学号/工号：</div>
-									<div class="col-sm-5">
-										<input type="text" class="form-control" v-model ="user.num" placeholder="请输入学号/工号"/>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-sm-4 control-label">密码：</div>
-									<div class="col-sm-5">
-										<input type="password" class="form-control" v-model ="user.password" placeholder="请输入密码"/>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-sm-4 control-label">确认密码：</div>
-									<div class="col-sm-5">
-										<input type="password" class="form-control" placeholder="请再输入一遍密码"/>
-									</div>
-								</div>
-								<div class="form-group" id="student">
-									<div class="col-md-4 control-label">班级：</div>
-								 	<div class="col-md-5">
-								 		<select class="form-control" v-model="user.grade">  
-										  <option v-for="option in options" v-bind:value="option.value">  
-										    {{ option.text }}  
-										  </option>  
-										</select> 
-								  		<!-- <select class="form-control"  v-model="user.stuClass">
-											<option value = "1">软件工程1401</option>
-											<option value = "2">软件工程1402</option>
-											<option value = "3">软件工程1403</option>
-											<option value = "4">软件工程1404</option>
-										</select> -->
-								 	</div>
-								 </div>
-								
-								<div class="form-group">
-									<div class="col-sm-4 control-label">姓名：</div>
-									<div class="col-sm-5">
-										<input type="text" class="form-control" v-model ="user.name" placeholder="请输入用户姓名"/>
-									</div>
-								</div>	
-								<div class="form-group">
-									<div class="col-sm-4 control-label">性别：</div>
-									<div class="col-sm-5">
-										男<input type="radio" name="m" value="m" v-model = "user.sex"/>  
-										女<input type="radio" name="f" value="f" v-model = "user.sex"/>  
-										<!-- <input type="text" class="form-control" v-model ="user.sex" placeholder="请输入用户ID"/> -->
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-sm-4 control-label">电话：</div>
-									<div class="col-sm-5">
-										<input type="text" class="form-control" v-model ="user.phone" placeholder="请输入电话"/>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-sm-4 control-label">邮箱：</div>
-									<div class="col-sm-5">
-										<input type="text" class="form-control" v-model ="user.mail" placeholder="请输入邮箱"/>
-									</div>
-								</div>
-									
-								<div style="text-align: center;">
-			                          <button type="button" class="btn btn-primary" @click="submit" >  
-			                              	确认
-			                          </button>
-			                          <a href="/SSMall/views/login.html" class="btn btn-default" style="margin-left:30px">取消</a>
-								</div>
-					</form>
+				<h3 class="panel-title">学生</h3>
 			</div>
-		</div>		
+			<div id="toolbar">
+				<form id="searchForm" style="margin-left: 10px;">
+					<div class="form-inline">
+						<label class="control-label">批改状态：</label>
+						<div class="form-group">
+							<select class="form-control selectpicker" name="state" v-model="job.state" data-live-search="false"
+								data-size="10">
+								<option data-tokens="全部" value="" selected>全部</option>
+								<option data-tokens="未批改" value="1">未提交</option>
+								<option data-tokens="已批改" value="2">未批改</option>
+								<option data-tokens="已批改" value="3">已批改</option>
+							</select>
+						</div>
+						<label class="control-label">科目：</label>
+						<div class="form-group">
+							<select class="form-control" name="subject" v-model="job.subject">  
+								  <option v-for="subject in subjects" v-bind:value="subject.value">  
+								    {{ subject.text }}  
+								  </option>  
+								</select> 
+						 </div>
+						 <button type="button" class="btn btn-primary" @click="search" >搜索</button>
+					</div>
+				</form>
+			</div>
+			<table id="table" data-classes="table table-hover" 
+				data-pagination="true" data-toggle="table"
+				data-query-params="queryStudentParams"
+				data-url="http://localhost:8080/SSMall/working/queryWorkList"
+				data-id-field="id">
+				<thead>
+					<tr>
+						<th data-formatter="rowNoFormatter">序号</th>
+						<th data-field="title">作业题目</th>
+						<th data-field="updateTime">修改时间</th>
+						<th data-field="teacherName">发布人</th>
+						<th data-field="state" data-formatter="stateFormatter">作业状态</th>
+						<th data-field="subNum" data-formatter="deliveryTypeFormatter">科目</th>
+						<th data-field="publishUrl" data-formatter="publishUrlFormatter">作业详情</th>
+						
+					</tr>
+				</thead>
+			</table>
+		</div>
 	</div>
 </body>
 <script type="text/javascript">
+var baseUrl = "http://localhost:8080/SSMall";
 var param = getUrlParam();
 var username = param.username;
-var baseUrl = "http://localhost:8080/SSMall";
 var vm = new Vue({
-    el:'#register',
+    el:'#teacherVue',
     data:{
-        user:{},
-        options:[]
+    	job:{},
+    	grades:[],
+    	subjects:[]
     },
     methods: {
-    	
-    	userExchage :function(){
-    		userInfo();
-    	},
-    	submit :function(){
-    		 var user = $("#user").val();
-    		 var url;
-    		 if(user=="1"){//为学生
-    			url = baseUrl+"/user/stuRegister";
-    		 }else{//为教师
-    			url = baseUrl+"/user/teaRegister";
-    		 }
-	   		 $.ajax({
-	   	        type: "POST",
-	   	        url: url,
-	   	        data : vm.user,
-	   	        dataType:"json",
-	   	        success: function(resultData){
-	   				if(resultData.state==0){//保存成功
-	   					window.location.href = baseUrl + "/views/login.html";
-	   				 }else{
-	   					layer.msg('注册失败，请重新提交', {
-	   						  icon: 0
-	   						});
-	   				 }           	 
-	   	        }
-	   	    });
+    	search :function(){
+    		$("#table").bootstrapTable('refresh');
     	}
     },
     mounted: function () {
-    	userInfo();
+    	$(window).resize(function() {
+    		$('[data-toggle="table"]').bootstrapTable('resetView');
+    	});
     	//初始化班级信息
     	initStuClass();
+    	//初始化科目信息
+    	initSubject();
       }
 });
 
+/* 初始化班级信息 */
 function initStuClass(){
 	var url = baseUrl+"/class/list";
 	 $.ajax({
@@ -157,25 +104,125 @@ function initStuClass(){
         url: url,
         dataType:"json",
         success: function(resultData){
-        	
 			if(resultData.state==0){//查询成功
 				var options = [];
+				var flag={
+						text : "全部",
+						value : ""
+				}
+				options.push(flag);
+				vm.job.grade = "";
 			 	var data = resultData.data;
 				for (var i = 0; i < data.length; i++) {
 					var option = {}
 					option.text = data[i].className;
 					option.value = data[i].classNum;
-					vm.user.stuClass = data[i].classNum;
 					options.push(option);
 				}
-				vm.options = options;
+				vm.grades = options;
 			 }else{
 				 //查询失败
-				 alert(resultData.message);
+				 layer.msg(resultData.message, {
+		   				icon: 0,
+		   			});
 			 }           	 
         }
     });
 }
+/* 初始化科目信息 */
+function initSubject(){
+	var url = baseUrl+"/subject/list";
+	 $.ajax({
+        type: "GET",
+        url: url,
+        dataType:"json",
+        success: function(resultData){
+			if(resultData.state==0){//查询成功
+				var options = [];
+				var flag={
+						text : "全部",
+						value : ""
+				}
+				options.push(flag);
+				vm.job.subject = "";
+			 	var data = resultData.data;
+				for (var i = 0; i < data.length; i++) {
+					var option = {}
+					option.text = data[i].subName;
+					option.value = data[i].subNum;
+					options.push(option);
+				}
+				
+				vm.subjects = options;
+			 }else{
+				 //查询失败
+				 layer.msg(resultData.message, {
+		   				icon: 0,
+		   			});
+			 }           	 
+        }
+    });
+}
+
+function queryStudentParams(params) {
+	var query = $("#searchForm").serializeJSON();
+	query["stuNum"] = username;
+	query["pageNumber"] = params.pageNumber;
+	query["pageSize"] = params.pageSize;
+	if (params.sortName) {
+		query["sortName"] = params.sortName;
+		query["sortOrder"] = params.sortOrder;
+	}
+	return query;
+}
+
+
+//序号
+function rowNoFormatter(value, row, index){
+	var options = $("#table").bootstrapTable('getOptions');  
+    return options.pageSize * (options.pageNumber - 1) + index + 1;
+}
+//柔和灰（text-muted）、主要蓝（text-primary）、成功绿（text-success）、信息蓝（text-info）、警告黄（text-warning）、危险红（text-danger）
+//作业状态
+function stateFormatter(value, row, index) {
+	if (value == "1") {
+		return "<span class='text-danger'>未提交</span>";
+	} else if(value == "2"){
+		return "<span class='text-muted'>未批改</span>";
+	}else{
+		return "<span class='text-success'>已批改</span>";
+	}
+}
+//作业详情
+function publishUrlFormatter(value, row, index){
+	return [ "<a href='javascript:void(0)' onclick='workingInfo(\""+value+"\" )' class='btn btn-xs ' title='查看'>编辑</a>" ].join('');
+}
+//班级信息
+function classNameFormatter(value, row, index) {
+	var grades = vm.grades;
+	for (var i = 0; i < grades.length; i++) {
+		if(grades[i].value==value){
+			return "<span class='text-info'>"+grades[i].text+"</span>";
+		}
+	}
+	return "<span class='text-info'></span>";
+}
+//科目信息
+function deliveryTypeFormatter(value, row, index) {
+	var subjects = vm.subjects;
+	for (var i = 0; i < subjects.length; i++) {
+		if(subjects[i].value==value){
+			return "<span class='text-info'>"+subjects[i].text+"</span>";
+		}
+	}
+	return "<span class='text-info'></span>";
+}
+
+//
+function workingInfo(questions){
+	console.log(questions);
+}
+
 //获取Url参数
 function getUrlParam(){
     var url = location.search; //获取url中"?"符后的字串   
@@ -188,15 +235,6 @@ function getUrlParam(){
        }   
     }   
     return theRequest;   
-}
-/* 判断注册的信息为学生还是教师 */
-function userInfo(){
-	var user = $("#user").val();
-	if(user=="1"){//为学生
-		$("#student").show();
-	}else{//为教师
-		$("#student").hide();
-	}
 }
 </script>
 </html>

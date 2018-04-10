@@ -100,9 +100,9 @@ var vm = new Vue({
     data:{
     	question:{},
     	grades:[],
-    	grade:"999",
+    	grade:"",
     	subjects:[],
-    	subject:"999"
+    	subject:""
     },
     methods: {
     	submit :function(){
@@ -188,7 +188,7 @@ function initStuClass(){
 				var options = [];
 				var flag={
 						text : "全部",
-						value : "999"
+						value : ""
 				}
 				options.push(flag);
 				//vm.grade = "";
@@ -224,7 +224,7 @@ function initSubject(){
 				var options = [];
 				var flag={
 						text : "全部",
-						value : "999"
+						value : ""
 				}
 				options.push(flag);
 				//vm.subject = "";
