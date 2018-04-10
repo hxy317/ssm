@@ -133,7 +133,7 @@
 		<where>
 			S.grade = C.class_num
 			AND C.teacher_num = #{teacherNum}
-			<if test="classNum !=null">
+			<if test='classNum !=null and classNum !="" '>
 				AND C.class_num = #{classNum}
 			</if>
 		</where>
