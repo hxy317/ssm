@@ -18,7 +18,8 @@
 <title>学生</title>
 </head>
 <body>
-	<div class="panel-body" id="teacherVue">
+<div id="teacherVue">
+	<div class="panel-body">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">学生</h3>
@@ -61,6 +62,7 @@
 						<th data-field="teacherName">发布人</th>
 						<th data-field="state" data-formatter="stateFormatter">作业状态</th>
 						<th data-field="subNum" data-formatter="deliveryTypeFormatter">科目</th>
+						<th data-field="submitUrl">答案</th>
 						<th data-field="publishUrl" data-formatter="publishUrlFormatter">作业详情</th>
 						
 					</tr>
@@ -68,11 +70,42 @@
 			</table>
 		</div>
 	</div>
+	<!-- 模态框 -->
+	<div class="modal fade" id="workingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" style="width:800px">
+			<div class="modal-content">
+				<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 class="modal-title text-center" id="title"></h3>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" id="answerForm" style="margin:30px">
+						 	<!-- <div class="form-group" >
+									<p><i>Q:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i><i>题目1</i><p>
+									<div>
+										<i>A:</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										<textarea rows="3" class="form-control" name="answer"></textarea>
+									</div>
+							</div>-->		
+					</form>	
+				</div>
+				<div style="text-align: center;">
+                       <button type="button" class="btn btn-primary" @click="submit" >提交</button>
+                       <button type="button" class="btn btn-default back" style="margin-left:30px">返回</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+	</div>
+	
+</div>
 </body>
 <script type="text/javascript">
 var baseUrl = "http://localhost:8080/SSMall";
 var param = getUrlParam();
 var username = param.username;
+var flag = 0;
+var ID = "";//当前行的id
 var vm = new Vue({
     el:'#teacherVue',
     data:{
@@ -83,6 +116,30 @@ var vm = new Vue({
     methods: {
     	search :function(){
     		$("#table").bootstrapTable('refresh');
+    	},
+    	submit :function(){
+    		var answers = pacageData();
+    		var param = {};
+    		param.answers = answers;
+    		param.id = ID;
+    		var url = baseUrl+"/working/updateAnswser";
+    		$.ajax({
+    		        type: "POST",
+    		        url: url,
+    		        data : param ,
+    		        dataType:"json",
+    		        success: function(resultData){
+    					if(resultData.state==0){//保存成功
+    						layer.msg('保存成功', {
+  							  icon: 1,
+  							});
+    					 }else{
+    						layer.msg('注册失败，请重新提交', {
+    							  icon: 0,
+    							});
+    					 }           	 
+    		        }
+    		    });
     	}
     },
     mounted: function () {
@@ -195,7 +252,7 @@ function stateFormatter(value, row, index) {
 }
 //作业详情
 function publishUrlFormatter(value, row, index){
-	return [ "<a href='javascript:void(0)' onclick='workingInfo(\""+value+"\" )' class='btn btn-xs ' title='查看'>编辑</a>" ].join('');
+	return [ "<a href='javascript:void(0)' onclick='workingInfo(\""+row.id+"\",\""+row.title+"\",\""+row.publishUrl+"\" )' class='btn btn-xs ' title='查看'>编辑</a>" ].join('');
 }
 //班级信息
 function classNameFormatter(value, row, index) {
@@ -219,10 +276,39 @@ function deliveryTypeFormatter(value, row, index) {
 }
 
 //
-function workingInfo(questions){
-	console.log(questions);
+function workingInfo(id,title,publishUrl){
+	$("#workingModal").modal();
+	//$('#answerForm')[0].reset();
+	//$("#myModal").modal("hide");
+	ID = id;
+	$("#title").text(title);
+	var questions = publishUrl.split(":;");
+	var html = '';
+	var i;
+	for (i = 0; i < questions.length; i++) {
+		var question = questions[i];
+		html += '<div class="form-group" id = "answergroup'+i+' ">'
+			+'<p><i>Q:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i><i>'+question+'</i><p>'
+			+'<div>'
+			+'<i>A:</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+			+'<textarea rows="3" class="form-control" name="answer" id = "answer'+i+' "></textarea>'
+			+'</div>'
+			+'</div>'
+	}
+	flag = i;
+		$("#answerForm").html(html);
 }
-
+//获取表单数据
+function pacageData(){
+	var data=""
+	for(var i = 0;i < flag; i++){
+		if(($("#answergroup"+i+"").length)>0){
+			data = data + $("#answer"+i+"").val() + ":;"
+		}
+	}
+	return data.substring(0,data.length-2);
+	
+}
 //获取Url参数
 function getUrlParam(){
     var url = location.search; //获取url中"?"符后的字串   
