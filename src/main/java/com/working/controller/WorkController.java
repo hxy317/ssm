@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.util.StringUtil;
 import com.working.entity.Student;
 import com.working.entity.Subject;
 import com.working.entity.Teacher;
@@ -179,6 +180,39 @@ public class WorkController {
                 }
             }
             
+            // 保存作业
+            resultMap.put("state", 0);
+            resultMap.put("msg", "作业保存成功");
+        } catch (Exception e) {
+            resultMap.put("state", -1);
+            resultMap.put("msg", "作业保存失败");
+        }
+        return resultMap;
+    }
+    
+    /**
+     * 保存作业
+     * 
+     * @param teacher 学生信息
+     * @return Map 保存结果
+     */
+    @RequestMapping("/updateAnswser")
+    public Map<String, Object> updateAnswser(HttpServletRequest request) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("data", "");
+        // 查询条件
+        String id = request.getParameter("id");
+        if (id == null || StringUtil.isEmpty(id)) {
+            resultMap.put("state", -1);
+            resultMap.put("msg", "传入id");
+            return resultMap;
+        }
+        String anwser = request.getParameter("anwser");
+        Work work = new Work();
+        work.setId(id);
+        work.setSubmitUrl(anwser);
+        try {
+            workService.update(work);
             // 保存作业
             resultMap.put("state", 0);
             resultMap.put("msg", "作业保存成功");
