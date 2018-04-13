@@ -6,7 +6,6 @@
 		<result column="title" property="title" />
 		<result column="teacher_num" property="teacherNum" />
 		<result column="teacher_name" property="teacherName" />
-		<result column="publish_url" property="publishUrl" />
 		<result column="state" property="state" />
 		<result column="class_num" property="classNum" />
 		<result column="class_name" property="className" />
@@ -14,7 +13,9 @@
 		<result column="sub_name" property="subName" />
 		<result column="stu_num" property="stuNum" />
 		<result column="stu_name" property="stuName" />
-		<result column="submit_url" property="submitUrl" />
+		<result column="question" property="question" />
+		<result column="answer" property="answer" />
+		<result column="grade" property="grade" />
 		<result column="update_time" property="updateTime" />
 	</resultMap>
 	
@@ -23,7 +24,6 @@
 		title as title,
 		teacher_num as teacherNum,
 		teacher_name as teacherName,
-		publish_url as publishUrl,
 		state as state,
 		class_num as classNum,
 		class_name as className,
@@ -31,7 +31,9 @@
 		sub_name as subName,
 		stu_num as stuNum,
 		stu_name as stuName,
-		submit_url as submitUrl,
+		question as question,
+		answer as answer,
+		grade as grade,
 		update_time as updateTime
 	</sql>
 
@@ -47,9 +49,6 @@
 		</if>	
 		<if test="teacherName != null">
 			and teacher_name=#{teacherName}
-		</if>	
-		<if test="publishUrl != null">
-			and publish_url=#{publishUrl}
 		</if>	
 		<if test="state != null">
 			and state=#{state}
@@ -72,8 +71,14 @@
 		<if test="stuName != null">
 			and stu_name=#{stuName}
 		</if>	
-		<if test="submitUrl != null">
-			and submit_url=#{submitUrl}
+		<if test="question != null">
+			and question=#{question}
+		</if>	
+		<if test="answer != null">
+			and answer=#{answer}
+		</if>	
+		<if test="grade != null">
+			and grade=#{grade}
 		</if>	
 		<if test="updateTime != null">
 			and update_time=#{updateTime}
@@ -82,28 +87,28 @@
 
 	<insert id="insert" parameterType="com.working.entity.Work" >
     	insert into work
-    		(id, title, teacher_num, teacher_name, publish_url, state, class_num, class_name, sub_num, sub_name, stu_num, stu_name, submit_url, update_time) 
+    		(id, title, teacher_num, teacher_name, state, class_num, class_name, sub_num, sub_name, stu_num, stu_name, question, answer, grade, update_time) 
     	values
-    		(#{id}, #{title}, #{teacherNum}, #{teacherName}, #{publishUrl}, #{state}, #{classNum}, #{className}, #{subNum}, #{subName}, #{stuNum}, #{stuName}, #{submitUrl}, #{updateTime})
+    		(#{id}, #{title}, #{teacherNum}, #{teacherName}, #{state}, #{classNum}, #{className}, #{subNum}, #{subName}, #{stuNum}, #{stuName}, #{question}, #{answer}, #{grade}, #{updateTime})
   	</insert>
 
   	<insert id="insertList" parameterType="java.util.List" >
     	insert into work
-    		(id, title, teacher_num, teacher_name, publish_url, state, class_num, class_name, sub_num, sub_name, stu_num, stu_name, submit_url, update_time) 
+    		(id, title, teacher_num, teacher_name, state, class_num, class_name, sub_num, sub_name, stu_num, stu_name, question, answer, grade, update_time) 
     	values
     	<foreach collection="list" index="index" item="item" separator=",">
-    		(#{item.id}, #{item.title}, #{item.teacherNum}, #{item.teacherName}, #{item.publishUrl}, #{item.state}, #{item.classNum}, #{item.className}, #{item.subNum}, #{item.subName}, #{item.stuNum}, #{item.stuName}, #{item.submitUrl}, #{item.updateTime})
+    		(#{item.id}, #{item.title}, #{item.teacherNum}, #{item.teacherName}, #{item.state}, #{item.classNum}, #{item.className}, #{item.subNum}, #{item.subName}, #{item.stuNum}, #{item.stuName}, #{item.question}, #{item.answer}, #{item.grade}, #{item.updateTime})
     	</foreach>
   	</insert>
 
   	<update id="delete" parameterType="java.lang.String">
-		update work set is_delete=0 where id = #{id}
+		delete from work where id = #{id}
     </update>
 
   	<update id="update" parameterType="com.working.entity.Work">
 		update work set
-		title=#{title}, teacher_num=#{teacherNum}, teacher_name=#{teacherName}, publish_url=#{publishUrl}, state=#{state}, class_num=#{classNum}, class_name=#{className}, sub_num=#{subNum}, sub_name=#{subName}, stu_num=#{stuNum}, stu_name=#{stuName}, submit_url=#{submitUrl}, update_time=#{updateTime}
-		where id = #{id} and is_delete=1
+		title=#{title}, teacher_num=#{teacherNum}, teacher_name=#{teacherName}, state=#{state}, class_num=#{classNum}, class_name=#{className}, sub_num=#{subNum}, sub_name=#{subName}, stu_num=#{stuNum}, stu_name=#{stuName}, question=#{question}, answer=#{answer}, grade=#{grade}, update_time=#{updateTime}
+		where id = #{id}
 	</update>
 	
 	<update id="updateIfNotNull" parameterType="com.working.entity.Work">
@@ -116,9 +121,6 @@
 		</if>
 		<if test="teacherName != null">
 			teacher_name=#{teacherName}, 
-		</if>
-		<if test="publishUrl != null">
-			publish_url=#{publishUrl}, 
 		</if>
 		<if test="state != null">
 			state=#{state}, 
@@ -141,13 +143,19 @@
 		<if test="stuName != null">
 			stu_name=#{stuName}, 
 		</if>
-		<if test="submitUrl != null">
-			submit_url=#{submitUrl}, 
+		<if test="question != null">
+			question=#{question}, 
+		</if>
+		<if test="answer != null">
+			answer=#{answer}, 
+		</if>
+		<if test="grade != null">
+			grade=#{grade}, 
 		</if>
 		<if test="updateTime != null">
 			update_time=#{updateTime}
 		</if>
-		where id = #{id} and is_delete=1
+		where id = #{id}
 	</update>
 
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >

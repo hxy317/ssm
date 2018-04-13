@@ -37,26 +37,38 @@ public class UserController {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         Student student = new Student();
         student.setNum(username);
-        student.setPassword(password);
+        // student.setPassword(password);
         List<Student> students = studentService.selectList(student);
         if (students.isEmpty()) {// 该账号不是学生
             Teacher teacher = new Teacher();
             teacher.setNum(username);
-            teacher.setPassword(password);
+            // teacher.setPassword(password);
             List<Teacher> teachers = teacherService.selectList(teacher);
             if (teachers.isEmpty()) {// 该账号不是教师
                 resultMap.put("data", "");
                 resultMap.put("state", -1);
-                resultMap.put("msg", "查询成功");
+                resultMap.put("message", "该用户不存在，请先注册");
             } else {
-                resultMap.put("data", "teacher");
-                resultMap.put("state", 0);
-                resultMap.put("msg", "查询成功");
+                if (password.equals(teachers.get(0).getPassword())) {
+                    resultMap.put("data", "teacher");
+                    resultMap.put("state", 0);
+                    resultMap.put("message", "查询成功");
+                } else {
+                    resultMap.put("data", "");
+                    resultMap.put("state", -1);
+                    resultMap.put("message", "密码错误,请重新输入密码");
+                }
             }
         } else {
-            resultMap.put("data", "student");
-            resultMap.put("state", 0);
-            resultMap.put("msg", "查询成功");
+            if (password.equals(students.get(0).getPassword())) {
+                resultMap.put("data", "student");
+                resultMap.put("state", 0);
+                resultMap.put("message", "查询成功");
+            } else {
+                resultMap.put("data", "");
+                resultMap.put("state", -1);
+                resultMap.put("message", "密码错误,请输入密码");
+            }
         }
         
         return resultMap;
@@ -75,10 +87,10 @@ public class UserController {
         try {
             studentService.insert(student);
             resultMap.put("state", 0);
-            resultMap.put("msg", "保存成功");
+            resultMap.put("message", "保存成功");
         } catch (Exception e) {
             resultMap.put("state", -1);
-            resultMap.put("msg", "保存失败");
+            resultMap.put("message", "保存失败");
         }
         
         return resultMap;
@@ -96,10 +108,10 @@ public class UserController {
         try {
             teacherService.insert(teacher);
             resultMap.put("state", 0);
-            resultMap.put("msg", "保存成功");
+            resultMap.put("message", "保存成功");
         } catch (Exception e) {
             resultMap.put("state", -1);
-            resultMap.put("msg", "保存失败");
+            resultMap.put("message", "保存失败");
         }
         resultMap.put("data", "");
         return resultMap;

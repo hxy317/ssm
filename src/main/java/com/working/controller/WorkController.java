@@ -158,7 +158,7 @@ public class WorkController {
                         work.setTeacherNum(teacherNum);
                         work.setTeacherName(teacherName);
                         work.setTitle(title);
-                        work.setPublishUrl(questions);
+                        work.setQuestion(questions);
                         work.setUpdateTime(new Timestamp(new Date().getTime()));
                         workService.insert(work);
                     }
@@ -174,7 +174,7 @@ public class WorkController {
                     work.setTeacherNum(teacherNum);
                     work.setTeacherName(teacherName);
                     work.setTitle(title);
-                    work.setPublishUrl(questions);
+                    work.setQuestion(questions);
                     work.setUpdateTime(new Timestamp(new Date().getTime()));
                     workService.insert(work);
                 }
@@ -182,16 +182,16 @@ public class WorkController {
             
             // 保存作业
             resultMap.put("state", 0);
-            resultMap.put("msg", "作业保存成功");
+            resultMap.put("message", "作业保存成功");
         } catch (Exception e) {
             resultMap.put("state", -1);
-            resultMap.put("msg", "作业保存失败");
+            resultMap.put("message", "作业保存失败");
         }
         return resultMap;
     }
     
     /**
-     * 保存作业
+     * 更新作业
      * 
      * @param teacher 学生信息
      * @return Map 保存结果
@@ -201,24 +201,35 @@ public class WorkController {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("data", "");
         // 查询条件
+        Work work = new Work();
         String id = request.getParameter("id");
         if (id == null || StringUtil.isEmpty(id)) {
             resultMap.put("state", -1);
-            resultMap.put("msg", "传入id");
+            resultMap.put("message", "传入id");
             return resultMap;
         }
-        String anwser = request.getParameter("anwser");
-        Work work = new Work();
+        String state = request.getParameter("state");
+        if (state != null && !StringUtil.isEmpty(state)) {
+            work.setState(state);
+        }
+        String answer = request.getParameter("answer");
+        if (answer != null && !StringUtil.isEmpty(answer)) {
+            work.setAnswer(answer);
+        }
+        String grade = request.getParameter("grade");
+        if (grade != null && !StringUtil.isEmpty(grade)) {
+            work.setGrade(grade);
+        }
         work.setId(id);
-        work.setSubmitUrl(anwser);
+        work.setUpdateTime(new Timestamp(new Date().getTime()));
         try {
-            workService.update(work);
+            workService.updateIfNotNull(work);
             // 保存作业
             resultMap.put("state", 0);
-            resultMap.put("msg", "作业保存成功");
+            resultMap.put("message", "作业保存成功");
         } catch (Exception e) {
             resultMap.put("state", -1);
-            resultMap.put("msg", "作业保存失败");
+            resultMap.put("message", "作业保存失败");
         }
         return resultMap;
     }

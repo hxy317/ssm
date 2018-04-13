@@ -6,7 +6,7 @@ package com.working.entity;
  *
  * @author 惠新宇
  * @since 1.8
- * @version 2018年03月05日 惠新宇
+ * @version 2018年04月12日 惠新宇
  */
 public class Work {
     
@@ -22,16 +22,13 @@ public class Work {
     /** 老师姓名 */
     private String teacherName;
     
-    /** 提交url */
-    private String publishUrl;
-    
     /** 作业状态 */
     private String state;
     
     /** 班级编号 */
     private String classNum;
     
-    /** 班级名称 */
+    /** 编号名称 */
     private String className;
     
     /** 科目编号 */
@@ -46,8 +43,14 @@ public class Work {
     /** 学生名称 */
     private String stuName;
     
-    /** 提交url */
-    private String submitUrl;
+    /** 问题 */
+    private String question;
+    
+    /** 答案 */
+    private String answer;
+    
+    /** 评分 */
+    private String grade;
     
     /** 修改时间 */
     private java.sql.Timestamp updateTime;
@@ -125,24 +128,6 @@ public class Work {
     }
     
     /**
-     * 提交url
-     * 
-     * @param publishUrl 设置 publishUrl 属性值为参数值 publishUrl
-     */
-    public void setPublishUrl(String publishUrl) {
-        this.publishUrl = publishUrl == null ? null : publishUrl.trim();
-    }
-    
-    /**
-     * 提交url
-     * 
-     * @return 获取publishUrl属性值
-     */
-    public String getPublishUrl() {
-        return this.publishUrl;
-    }
-    
-    /**
      * 作业状态
      * 
      * @param state 设置 state 属性值为参数值 state
@@ -179,7 +164,7 @@ public class Work {
     }
     
     /**
-     * 班级名称
+     * 编号名称
      * 
      * @param className 设置 className 属性值为参数值 className
      */
@@ -188,7 +173,7 @@ public class Work {
     }
     
     /**
-     * 班级名称
+     * 编号名称
      * 
      * @return 获取className属性值
      */
@@ -269,21 +254,57 @@ public class Work {
     }
     
     /**
-     * 提交url
+     * 问题
      * 
-     * @param submitUrl 设置 submitUrl 属性值为参数值 submitUrl
+     * @param question 设置 question 属性值为参数值 question
      */
-    public void setSubmitUrl(String submitUrl) {
-        this.submitUrl = submitUrl == null ? null : submitUrl.trim();
+    public void setQuestion(String question) {
+        this.question = question == null ? null : question.trim();
     }
     
     /**
-     * 提交url
+     * 问题
      * 
-     * @return 获取submitUrl属性值
+     * @return 获取question属性值
      */
-    public String getSubmitUrl() {
-        return this.submitUrl;
+    public String getQuestion() {
+        return this.question;
+    }
+    
+    /**
+     * 答案
+     * 
+     * @param answer 设置 answer 属性值为参数值 answer
+     */
+    public void setAnswer(String answer) {
+        this.answer = answer == null ? null : answer.trim();
+    }
+    
+    /**
+     * 答案
+     * 
+     * @return 获取answer属性值
+     */
+    public String getAnswer() {
+        return this.answer;
+    }
+    
+    /**
+     * 评分
+     * 
+     * @param grade 设置 grade 属性值为参数值 grade
+     */
+    public void setGrade(String grade) {
+        this.grade = grade == null ? null : grade.trim();
+    }
+    
+    /**
+     * 评分
+     * 
+     * @return 获取grade属性值
+     */
+    public String getGrade() {
+        return this.grade;
     }
     
     /**
