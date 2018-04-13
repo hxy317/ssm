@@ -69,10 +69,9 @@
 	   					}
 	   				
 	   				 }else{//查询失败或账号不存在
-	   					layer.alert('您未注册，请先注册', {
-	   						  icon: 0,
-	   						  skin: 'layer-ext-moon'
-	   						});
+	   					 layer.msg(resultData.message, {
+	 		   				icon: 0,
+	 		   			});
 	   				 }           	 
 	   	        }
 	   	    });

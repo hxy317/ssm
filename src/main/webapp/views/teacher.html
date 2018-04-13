@@ -18,7 +18,8 @@
 <title>教师</title>
 </head>
 <body>
-	<div class="panel-body" id="teacherVue">
+<div id="teacherVue">
+	<div class="panel-body">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">教师</h3>
@@ -71,24 +72,56 @@
 						<th data-formatter="rowNoFormatter">序号</th>
 						<th data-field="updateTime">修改时间</th>
 						<th data-field="title">作业题目</th>
-						<th data-field="teacherName">提交人</th>
-						<th data-field="publishUrl">作业URL</th>
-						<th data-field="state" data-formatter="stateFormatter">作业状态</th>
-						<th data-field="classNum" data-formatter="classNameFormatter">班级 </th>
+						<th data-field="teacherName">发布人</th>
 						<th data-field="subNum" data-formatter="deliveryTypeFormatter">科目</th>
+						<th data-field="classNum" data-formatter="classNameFormatter">班级 </th>
+						<th data-field="state" data-formatter="stateFormatter">作业状态</th>
 						<th data-field="stuName">学生姓名</th>
-						<th data-field="submitUrl">提交作业</th>
+						<th data-field="question" data-formatter="questionFormatter">题目</th>
+						<th data-field="answer">答案</th>
 						
 					</tr>
 				</thead>
 			</table>
 		</div>
 	</div>
+	<!-- 模态框 -->
+	<div class="modal fade" id="workingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" style="width:800px">
+			<div class="modal-content">
+				<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 class="modal-title text-center" id="title"></h3>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" id="gradeForm" style="margin:30px">
+						 	 <div class="form-group" >
+									<p><i>Q:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i><i>题目1</i><p>
+									<p><i>A:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i><i>回答1</i><p>
+									<div>
+										<i>点评:</i>
+										<textarea rows="3" class="form-control" name="grade"></textarea>
+									</div>
+							</div>	
+					</form>	
+				</div>
+				<div style="text-align: center;">
+                       <button type="button" class="btn btn-primary" @click="submit" >提交</button>
+                       <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-left:30px">取消</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+	</div>
+</div>
 </body>
 <script type="text/javascript">
 var baseUrl = "http://localhost:8080/SSMall";
 var param = getUrlParam();
 var username = param.username;
+var ID = "";
+var flag = 0;
+
 var vm = new Vue({
     el:'#teacherVue',
     data:{
@@ -99,6 +132,33 @@ var vm = new Vue({
     methods: {
     	search :function(){
     		$("#table").bootstrapTable('refresh');
+    	},
+    	submit :function(){
+    		var grades = pacageData();
+    		var param = {};
+    		param.id = ID;
+    		param.state = "3";
+    		param.grade = grades;
+    		var url = baseUrl+"/working/updateAnswser";
+    		$.ajax({
+    		        type: "POST",
+    		        url: url,
+    		        data : param ,
+    		        dataType:"json",
+    		        success: function(resultData){
+    					if(resultData.state==0){//保存成功
+    						$("#workingModal").modal("hide");
+    						$("#table").bootstrapTable('refresh');
+    						layer.msg('保存成功', {
+  							  icon: 1,
+  							});
+    					 }else{
+    						layer.msg('注册失败，请重新提交', {
+    							  icon: 0,
+    							});
+    					 }           	 
+    		        }
+    		    });
     	},
     	addWorking :function(){
     		window.location.href = baseUrl + "/views/working.html?username="+username;
@@ -231,6 +291,64 @@ function deliveryTypeFormatter(value, row, index) {
 	}
 	return "<span class='text-info'></span>";
 }
+//作业详情
+function questionFormatter(value, row, index){
+	
+	return [ "<a href='javascript:void(0)' onclick='workingInfo(\""+row.id+"\",\""+row.title+"\",\""+row.state+"\",\""+row.question+"\",\""+row.answer+"\",\""+row.grade+"\" )' class='btn btn-xs ' title='查看'>审批</a>" ].join('');
+}
+function workingInfo(id,title,state,question,answer,grade){
+	if(state=="1"){
+		layer.msg("该学生还未提交作业", {
+				icon: 0,
+			});
+		return ;
+	}
+	
+	$("#workingModal").modal();
+	$('#gradeForm')[0].reset();
+	ID = id;
+	$("#title").text(title);
+	var questions = question.split(":;");
+	var answers = answer.split(":;");
+	var grades;
+	if(state=="3"){
+		grades = grade.split(":;");
+	}
+	var html = '';
+	var i;
+	for (i = 0; i < questions.length; i++) {
+		var question = questions[i];
+		var answer = answers[i];
+		var grade = ""
+		if(state=="3"){
+			grade = grades[i];
+		}
+		html += '<div class="form-group" style="padding-bottom:20px; border-bottom:1px solid #A9C9E2">'
+			+'<p><i>Q:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i><i>'+question+'</i><p>'
+			+'<p><i>A:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i><i>'+answer+'</i><p>'
+			+'<div>'
+			+'<i>点评:</i>'
+			+'<textarea rows="3" class="form-control" name="grade" id = "grade'+i+'" >'+grade+'</textarea>'
+			+'</div>'
+			+'</div>';
+	}
+	flag = i;
+	$("#gradeForm").html(html);
+	
+}
+
+//获取表单数据
+function pacageData(){
+	var data=""
+	for(var i = 0;i < flag; i++){
+		if(($("#grade"+i+"").length)>0){
+			data = data + $("#grade"+i+"").val() + ":;"
+		}
+	}
+	return data.substring(0,data.length-2);
+	
+}
+
 //获取Url参数
 function getUrlParam(){
     var url = location.search; //获取url中"?"符后的字串   
