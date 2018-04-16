@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="shortcut icon" href="/SSMall/images/head.jpeg" type="image/x-icon">
+<link href="/SSMall/styles/bootstrap/bootstrap.min.css" rel="stylesheet">
+<link href="/SSMall/styles/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+<link href="/SSMall/styles/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+<link href="/SSMall/js/layer/skin/default/layer.css" rel="stylesheet" id="layuicss-skinlayercss"></head>
+<script type="text/javascript" src="/SSMall/js/jquery.min.js"></script>
+<script type="text/javascript" src="/SSMall/js/bootstrap/bootstrap.min.js"></script>
+<script type="text/javascript" src="/SSMall/js/bootstrap-table/bootstrap-table.js"></script>
+<script type="text/javascript" src="/SSMall/js/bootstrap-select/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/SSMall/js/validate/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/SSMall/js/validate/bootstrapValidator.js"></script>
+<script type="text/javascript" src="/SSMall/js/validate/zh_CN.js"></script>
+<script type="text/javascript" src="/SSMall/js/layer/layer.js"></script>
+<script type="text/javascript" src="/SSMall/js/vue.js"></script>
+<script type="text/javascript" src="/SSMall/js/common.js"></script>
+<title>管理员</title>
+<style type="text/css">
+	
+</style>
+</head>
+<body>
+<div id="rootVue">
+	<div class="panel-body">
+		<div class="panel panel-default">
+			<div class="panel-heading" style=" height:50px">
+				<div class="navbar-header pull-right" role="navigation">
+					<ul class="nav ace-nav" style="background-color: rgba(255, 255, 255, 0)">
+						<li class="light-blue" style="background-color: rgba(255, 255, 255, 0)">
+							<a data-toggle="dropdown" href="#" class="dropdown-toggle" style="margin-top:0px;background-color: rgba(255, 255, 255, 0); float: right;">
+								<span class="user-info" style="background-color: rgba(255, 255, 255, 0); float: left;">
+									<span style="font-size: 14px; font-family: Microsoft Yahei">您好：</span>
+									<span style="font-size: 16px; font-family: Microsoft Yahei">管理员</span>
+								</span> 
+							</a>
+							<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close" style="margin-top:40px">
+								<li>
+									<a href="/SSMall/views/login.html">
+										<i class="icon-off"></i>退出
+									</a>
+								</li>
+							</ul>
+							
+						</li>
+					</ul>
+					<!-- /.ace-nav -->
+				</div>
+			</div>
+			
+			<ul id="myTab" class="nav nav-tabs" style="margin:-1px;margin-left:10px">
+				<li class="active">
+					<a href="#grade" data-toggle="tab">班级管理</a>
+				</li>
+				<li><a href="#subject" data-toggle="tab">课程管理</a></li>
+				<li class="dropdown">
+					<a href="#" id="myTabDrop1" class="dropdown-toggle" 
+					   data-toggle="dropdown">用户管理<b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+						<li>
+							<a href="#student" tabindex="-1" data-toggle="tab">学生管理</a>
+						</li>
+						<li>
+							<a href="#teacher" tabindex="-1" data-toggle="tab">教师管理</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<div id="myTabContent" class="tab-content" style="margin:15px;">
+				<div class="tab-pane fade in active" id="grade">
+					<form id="searchForm" style="margin-left: 10px;">
+							<div class="form-inline">
+								<label class="control-label">教师姓名：</label>
+								<div class="form-group">
+									<input type="text" class="form-control" name="teacherName" />
+								 </div>
+								 <button type="button" class="btn btn-primary" @click="search" >搜索</button>
+							</div>
+						</form>
+						<table id="table" data-classes="table table-hover" 
+							data-pagination="true" data-toggle="table"
+							data-query-params="queryParams"
+							data-url="http://localhost:8080/SSMall/class/queryClassList"
+							data-id-field="id">
+							<thead>
+								<tr>
+									<th data-formatter="rowNoFormatter">序号</th>
+									<th data-field="classNum">班级编号</th>
+									<th data-field="className">班级名称</th>
+									<th data-field="teacherNum">教师工号</th>
+									<th data-field="teacherName">教师姓名</th>
+									<th data-field="id">操作</th>
+								</tr>
+							</thead>
+						</table>
+				</div>
+				<div class="tab-pane fade" id="subject">
+					<p>iOS 是一个由苹果公司开发和发布的手机操作系统。最初是于 2007 年首次发布 iPhone、iPod Touch 和 Apple 
+						TV。iOS 派生自 OS X，它们共享 Darwin 基础。OS X 操作系统是用在苹果电脑上，iOS 是苹果的移动版本。</p>
+				</div>
+				<div class="tab-pane fade" id="student">
+						<form id="searchForm" style="margin-left: 10px;">
+							<div class="form-inline">
+								<label class="control-label">批改状态：</label>
+								<div class="form-group">
+									<select class="form-control selectpicker" name="state" v-model="job.state" data-live-search="false"
+										data-size="10">
+										<option data-tokens="全部" value="" selected>全部</option>
+										<option data-tokens="未批改" value="1">未提交</option>
+										<option data-tokens="已批改" value="2">未批改</option>
+										<option data-tokens="已批改" value="3">已批改</option>
+									</select>
+								</div>
+								<label class="control-label">科目：</label>
+								<div class="form-group">
+									<select class="form-control" name="subject" v-model="job.subject">  
+										  <option v-for="subject in subjects" v-bind:value="subject.value">  
+										    {{ subject.text }}  
+										  </option>  
+										</select> 
+								 </div>
+								 <button type="button" class="btn btn-primary" @click="search" >搜索</button>
+							</div>
+						</form>
+						<table id="table" data-classes="table table-hover" 
+							data-pagination="true" data-toggle="table"
+							data-query-params="queryParams"
+							data-url="http://localhost:8080/SSMall/working/queryWorkList"
+							data-id-field="id">
+							<thead>
+								<tr>
+									<th data-formatter="rowNoFormatter">序号</th>
+									<th data-field="updateTime">修改时间</th>
+									<th data-field="subNum" data-formatter="deliveryTypeFormatter">科目</th>
+									<th data-field="title">作业题目</th>
+									<th data-field="teacherName">发布人</th>
+									<th data-field="stuName">学生姓名</th>
+									<th data-field="state" data-formatter="stateFormatter">作业状态</th>
+									<th data-field="question" data-formatter="questionFormatter">题目</th>
+									
+								</tr>
+							</thead>
+						</table>
+				</div>
+				<div class="tab-pane fade" id="teacher">
+					<p>Enterprise Java Beans（EJB）是一个创建高度可扩展性和强大企业级应用程序的开发架构，部署在兼容应用程序服务器（比如 JBOSS、Web Logic 等）的 J2EE 上。
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+</body>
+<script type="text/javascript">
+var baseUrl = "http://localhost:8080/SSMall";
+var vm = new Vue({
+    el:'#rootVue',
+    data:{
+    	stuInfo:{},
+    	job:{},
+    	grades:[],
+    	subjects:[]
+    },
+    methods: {
+    	search :function(){
+    		$("#table").bootstrapTable('refresh');
+    	},
+    	submit :function(){
+    		var answers = pacageData();
+    		var param = {};
+    		param.answer = answers;
+    		param.id = ID;
+    		param.state = "2";
+    		var url = baseUrl+"/working/updateAnswser";
+    		$.ajax({
+    		        type: "POST",
+    		        url: url,
+    		        data : param ,
+    		        dataType:"json",
+    		        success: function(resultData){
+    					if(resultData.state==0){//保存成功
+    						$("#workingModal").modal("hide");
+    						$("#table").bootstrapTable('refresh');
+    						layer.msg('保存成功', {
+  							  icon: 1,
+  							});
+    					 }else{
+    						layer.msg('注册失败，请重新提交', {
+    							  icon: 0,
+    							});
+    					 }           	 
+    		        }
+    		    });
+    	},
+    	submitStudent : function(){
+    		//表单校验
+    		if(!onsubmitFn()){
+    			return ;
+    		}
+    		var url = baseUrl+"/student/update";
+    		$.ajax({
+    		        type: "POST",
+    		        url: url,
+    		        data : vm.stuInfo ,
+    		        dataType:"json",
+    		        success: function(resultData){
+    					if(resultData.state==0){//保存成功
+    						$("#studentModal").modal("hide");
+    						layer.msg('保存成功', {
+  							  icon: 1,
+  							});
+    					 }else{
+    						layer.msg('保存失败，请重新提交', {
+    							  icon: 0,
+    							});
+    					 }           	 
+    		        }
+    		    });
+    	},
+    	
+    	//更新个人信息
+    	updateUserInfo :function(){
+    		console.log("更新");
+    		$("#studentModal").modal();
+    		//$('#studentInfoForm')[0].reset();
+    	}
+    },
+    mounted: function () {
+    	$(window).resize(function() {
+    		$('[data-toggle="table"]').bootstrapTable('resetView');
+    	});
+    	//初始化班级信息
+    	initStuClass();
+    	//初始化科目信息
+    	initSubject();
+    	//表单校验
+    	validateForm();
+      }
+});
+/* 初始化班级信息 */
+function initStuClass(){
+	var url = baseUrl+"/class/list";
+	 $.ajax({
+        type: "GET",
+        url: url,
+        dataType:"json",
+        success: function(resultData){
+			if(resultData.state==0){//查询成功
+				var options = [];
+				var flag={
+						text : "全部",
+						value : ""
+				}
+				options.push(flag);
+				vm.job.grade = "";
+			 	var data = resultData.data;
+				for (var i = 0; i < data.length; i++) {
+					var option = {}
+					option.text = data[i].className;
+					option.value = data[i].classNum;
+					options.push(option);
+				}
+				vm.grades = options;
+			 }else{
+				 //查询失败
+				 layer.msg(resultData.message, {
+		   				icon: 0,
+		   			});
+			 }           	 
+        }
+    });
+}
+/* 初始化科目信息 */
+function initSubject(){
+	var url = baseUrl+"/subject/list";
+	 $.ajax({
+        type: "GET",
+        url: url,
+        dataType:"json",
+        success: function(resultData){
+			if(resultData.state==0){//查询成功
+				var options = [];
+				var flag={
+						text : "全部",
+						value : ""
+				}
+				options.push(flag);
+				vm.job.subject = "";
+			 	var data = resultData.data;
+				for (var i = 0; i < data.length; i++) {
+					var option = {}
+					option.text = data[i].subName;
+					option.value = data[i].subNum;
+					options.push(option);
+				}
+				
+				vm.subjects = options;
+			 }else{
+				 //查询失败
+				 layer.msg(resultData.message, {
+		   				icon: 0,
+		   			});
+			 }           	 
+        }
+    });
+}
+//序号
+function rowNoFormatter(value, row, index){
+	var options = $("#table").bootstrapTable('getOptions');  
+    return options.pageSize * (options.pageNumber - 1) + index + 1;
+}
+//柔和灰（text-muted）、主要蓝（text-primary）、成功绿（text-success）、信息蓝（text-info）、警告黄（text-warning）、危险红（text-danger）
+//作业状态
+function stateFormatter(value, row, index) {
+	if (value == "1") {
+		return "<span class='text-danger'>未提交</span>";
+	} else if(value == "2"){
+		return "<span class='text-muted'>未批改</span>";
+	}else{
+		return "<span class='text-success'>已批改</span>";
+	}
+}
+//班级信息
+function classNameFormatter(value, row, index) {
+	var grades = vm.grades;
+	for (var i = 0; i < grades.length; i++) {
+		if(grades[i].value==value){
+			return "<span class='text-info'>"+grades[i].text+"</span>";
+		}
+	}
+	return "<span class='text-info'></span>";
+}
+//科目信息
+function deliveryTypeFormatter(value, row, index) {
+	var subjects = vm.subjects;
+	for (var i = 0; i < subjects.length; i++) {
+		if(subjects[i].value==value){
+			return "<span class='text-info'>"+subjects[i].text+"</span>";
+		}
+	}
+	return "<span class='text-info'></span>";
+}
+//作业详情
+function questionFormatter(value, row, index){
+	return [ "<a href='javascript:void(0)' onclick='workingInfo(\""+row.id+"\",\""+row.title+"\",\""+row.state+"\",\""+row.question+"\",\""+row.answer+"\",\""+row.grade+"\" )' class='btn btn-xs ' title='查看'>查看</a>" ].join('');
+}
+//作业编辑
+function workingInfo(id,title,state,question,answer,grade){
+	$("#workingModal").modal();
+	$('#answerForm')[0].reset();
+	ID = id;
+	$("#title").text(title);
+	var questions = question.split(":;");
+	var answers;
+	if(state!="1"){//待审批状态
+		answers = answer.split(":;");
+	}
+	if(state=="3"){//已审批状态
+		var grades = grade.split(":;");
+		var html = '';
+		for (var i = 0; i < questions.length; i++) {
+			var question = questions[i];
+			var answer = answers[i];
+			var	grade = grades[i];
+			html += '<div class="form-group" name="workgroup" style="padding-bottom:10px; border-bottom:1px solid #A9C9E2" >'
+				+'<p><i>Q:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i><i>'+question+'</i><p>'
+				+'<p><i>A:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i><i>'+answer+'</i><p>'
+				+'<p><i>点评:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i><i>'+grade+'</i><p>'
+				+'</div>';
+		}
+		$("#answerForm").html(html);
+		$("#modalFoot").hide();
+	}else{
+		var html = '';
+		var i;
+		for (i = 0; i < questions.length; i++) {
+			var question = questions[i];
+			var answer = "";
+			if(state=="2"){
+				answer = answers[i];
+			}
+			html += '<div class="form-group" id = "answergroup'+i+'" style="padding-bottom:20px; border-bottom:1px solid #A9C9E2">'
+				+'<p><i>Q:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i><i>'+question+'</i><p>'
+				+'<div>'
+				+'<i>A:</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+				+'<textarea rows="3" class="form-control" name="answer" id = "answer'+i+'">'+answer+'</textarea>'
+				+'</div>'
+				+'</div>'
+		}
+		flag = i;
+		$("#answerForm").html(html);
+	}
+	
+	
+}
+//获取表单数据
+function pacageData(){
+	var data=""
+	for(var i = 0;i < flag; i++){
+		if(($("#answer"+i+"").length)>0){
+			data = data + $("#answer"+i+"").val() + ":;"
+		}
+	}
+	return data.substring(0,data.length-2);
+	
+}
+//获取Url参数
+function getUrlParam(){
+    var url = location.search; //获取url中"?"符后的字串   
+    var theRequest = new Object();   
+    if (url.indexOf("?") != -1) {   
+       var str = url.substr(1);   
+       strs = str.split("&");   
+       for(var i = 0; i < strs.length; i ++) {   
+          theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);   
+       }   
+    }   
+    return theRequest;   
+}
+
+
+//表单提交前再进行一次验证
+function onsubmitFn() {
+  var bootstrapValidator = $("#studentInfoForm").data("bootstrapValidator");
+  bootstrapValidator.validate();
+  return bootstrapValidator.isValid();
+}
+//表单验证
+function validateForm(){
+	$("#studentInfoForm").bootstrapValidator({
+	    message: 'This value is not valid',
+	    feedbackIcons: {
+	        valid: 'glyphicon glyphicon-ok',
+	        invalid: 'glyphicon glyphicon-remove',
+	        validating: 'glyphicon glyphicon-refresh'
+	    },
+	    fields: {
+	        password: {
+	        	message: "密码校验失败",
+	        	validators: {
+	        		notEmpty: {
+	        			message: "密码不能为空"
+	        		},
+	        		stringLength: {//检测长度  
+                      min: 6,  
+                      max: 30,  
+                      message: '密码长度必须在6-30之间'  
+                  },
+	        	}
+	        },
+	        confirmPsw: {
+	            message: "验证密码失败",
+	            validators: {
+	            	notEmpty: {
+	        			message: "密码输入不一致"
+	        		},
+	                identical: {//与指定控件内容比较是否相同，比如两次密码不一致  
+                      field: 'password',//指定控件name  
+                      message: '密码输入不一致'  
+                  }, 
+	            }
+	        },
+	       
+	        phone: {
+	            message: "手机号码校验失败",
+	            validators: {
+	            	notEmpty: {
+	                    message: "手机号不能为空"
+	                },
+	                regexp: {//正则验证  
+                      regexp: /^[1][3,4,5,7,8][0-9]{9}$/,  
+                      message: '请输入正确的手机号码'  
+                  }, 
+	            }
+	        },
+	        mail: {
+	            message: "邮箱校验失败",
+	            validators: {
+	            	notEmpty: {
+	                    message: "邮箱不能为空"
+	                },
+	            	emailAddress: {//验证email地址  
+                      message: '请输入正确的邮箱地址'  
+                  },  
+	            }
+	        },
+	    }
+	});
+
+}
+</script>
+</html>
