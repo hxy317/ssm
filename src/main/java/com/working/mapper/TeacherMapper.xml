@@ -62,13 +62,13 @@
   	</insert>
 
   	<update id="delete" parameterType="java.lang.String">
-		update teacher set is_delete=0 where id = #{id}
+		delete from teacher where id = #{id}
     </update>
 
   	<update id="update" parameterType="com.working.entity.Teacher">
 		update teacher set
 		num=#{num}, password=#{password}, name=#{name}, sex=#{sex}, phone=#{phone}, mail=#{mail}
-		where id = #{id} and is_delete=1
+		where id = #{id}
 	</update>
 	
 	<update id="updateIfNotNull" parameterType="com.working.entity.Teacher">
@@ -77,7 +77,7 @@
 			num=#{num}, 
 		</if>
 		<if test="password != null">
-			and password=#{password},
+			password=#{password},
 		</if>
 		<if test="name != null">
 			name=#{name}, 
@@ -91,7 +91,7 @@
 		<if test="mail != null">
 			mail=#{mail}
 		</if>
-		where id = #{id} and is_delete=1
+		where id = #{id}
 	</update>
 
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
