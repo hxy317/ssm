@@ -35,6 +35,14 @@ public class UserController {
     public Map<String, Object> login(String username, String password) {
         
         Map<String, Object> resultMap = new HashMap<String, Object>();
+        // 判断是否为管理员
+        if ("root".equals(username) && "root".equals(password)) {
+            resultMap.put("data", "root");
+            resultMap.put("state", 0);
+            resultMap.put("message", "查询成功");
+            return resultMap;
+        }
+        
         Student student = new Student();
         student.setNum(username);
         // student.setPassword(password);

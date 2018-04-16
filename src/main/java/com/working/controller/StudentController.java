@@ -31,12 +31,10 @@ public class StudentController {
     private StudentService studentService;
     
     /**
-     * 商品列表查询
+     * 查询学生信息
      * 
-     * @param pageSize 每页行数
-     * @param pageNumber 第几页
-     * @return JQPage 商品列表
-     * @throws Exception e
+     * @param request request参数
+     * @return Map 学生信息
      */
     @RequestMapping("/queryUserByStuNum")
     public Map<String, Object> queryUserByStuNum(HttpServletRequest request) {
@@ -60,4 +58,26 @@ public class StudentController {
         return resultMap;
     }
     
+    /**
+     * 更新学生信息
+     * 
+     * @param request request参数
+     * @return Map 学生信息
+     */
+    @RequestMapping("/update")
+    public Map<String, Object> update(Student student, HttpServletRequest request) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        try {
+            studentService.updateIfNotNull(student);
+            resultMap.put("state", 0);
+            resultMap.put("data", "");
+            resultMap.put("message", "修改成功");
+            
+        } catch (Exception e) {
+            resultMap.put("state", -1);
+            resultMap.put("data", "");
+            resultMap.put("message", "修改失败");
+        }
+        return resultMap;
+    }
 }
