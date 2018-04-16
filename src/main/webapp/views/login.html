@@ -20,8 +20,8 @@
             <div class="col-sm-12">
                 <form method="post" id="documentForm">
                     <h4 class="font_white text-center">师生作业交流平台</h4>
-                    <input type="text" id="j_username" name="j_username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="form-control uname" placeholder="请输入学号/工号" required="" minlength="5">
-                    <input type="password" id = "j_password" name="j_password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="pwd form-control pword m-b" placeholder="请输入密码" required="" minlength="6">
+                    <input type="text" id="j_username" name="j_username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="form-control uname" placeholder="请输入学号/工号" required="" minlength="4">
+                    <input type="password" id = "j_password" name="j_password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="pwd form-control pword m-b" placeholder="请输入密码" required="" minlength="4">
                     <br>
                     <a class="btn btn-success btn-block font_white" style="background-color:#959da5;border: 0;" onclick="login()">登录</a>
                     <a href="/SSMall/views/register.html" class="btn btn-success btn-block font_white" style="background-color:#adb1b5;border: 0;" id="register">注册</a>
@@ -62,12 +62,14 @@
 	   	        dataType:"json",
 	   	        success: function(resultData){
 	   				if(resultData.state==0){//查询成功
-	   					if(resultData.data=="student"){//学生登陆 跳转学生页
+	   					if(resultData.data=="root"){
+	   						window.location.href = baseUrl + "/views/root.html";
+	   					}else if(resultData.data=="student"){//学生登陆 跳转学生页
 	   						window.location.href = baseUrl + "/views/student.html?username="+username;
-	   					}else{//教师登陆 跳转教师页
+	   					}else {//教师登陆 跳转教师页
 	   						window.location.href = baseUrl + "/views/teacher.html?username="+username;
 	   					}
-	   				
+	   					
 	   				 }else{//查询失败或账号不存在
 	   					 layer.msg(resultData.message, {
 	 		   				icon: 0,
@@ -83,11 +85,11 @@
 		    messages: {
 		    	j_username: {
 		    		required:"账号不允许为空",
-		    		minlength:"账号至少为6位"
+		    		minlength:"账号至少为4位"
 		    	},
 		    	j_password: {
 		    		required:"密码不允许为空",
-		    		minlength:"密码至少为6位"
+		    		minlength:"密码至少为4位"
 		    	},
 		    }
 		}).form();

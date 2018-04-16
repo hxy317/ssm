@@ -11,8 +11,10 @@
 <script type="text/javascript" src="/SSMall/js/bootstrap/bootstrap.min.js"></script>
 <script type="text/javascript" src="/SSMall/js/bootstrap-table/bootstrap-table.js"></script>
 <script type="text/javascript" src="/SSMall/js/bootstrap-select/bootstrap-select.min.js"></script>
-<script type="text/javascript" src="/SSMall/js/layer/layer.js"></script>
 <script type="text/javascript" src="/SSMall/js/validate/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/SSMall/js/validate/bootstrapValidator.js"></script>
+<script type="text/javascript" src="/SSMall/js/validate/zh_CN.js"></script>
+<script type="text/javascript" src="/SSMall/js/layer/layer.js"></script>
 <script type="text/javascript" src="/SSMall/js/vue.js"></script>
 <script type="text/javascript" src="/SSMall/js/common.js"></script>
 <title>学生</title>
@@ -31,7 +33,7 @@
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle" style="margin-top:0px;background-color: rgba(255, 255, 255, 0); float: right;">
 								<span class="user-info" style="background-color: rgba(255, 255, 255, 0); float: left;">
 									<span style="font-size: 14px; font-family: Microsoft Yahei">您好：</span>
-									<span style="font-size: 16px; font-family: Microsoft Yahei">{{name}}</span>
+									<span style="font-size: 16px; font-family: Microsoft Yahei">{{stuInfo.name}}</span>
 								</span> 
 							</a>
 							<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close" style="margin-top:40px">
@@ -93,7 +95,6 @@
 						<th data-field="stuName">学生姓名</th>
 						<th data-field="state" data-formatter="stateFormatter">作业状态</th>
 						<th data-field="question" data-formatter="questionFormatter">题目</th>
-						<th data-field="answer">答案</th>
 						
 					</tr>
 				</thead>
@@ -118,10 +119,74 @@
 									</div>
 							</div>-->		
 					</form>	
+					<div style="text-align: center;" id="modalFoot" >
+	                       <button type="button" class="btn btn-primary" @click="submit" >提交</button>
+	                       <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-left:30px">取消</button>
+					</div>
 				</div>
-				<div style="text-align: center;" id="modalFoot" >
-                       <button type="button" class="btn btn-primary" @click="submit" >提交</button>
-                       <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-left:30px">取消</button>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+	</div>
+	
+	<!-- 模态框 -->
+	<div class="modal fade" id="studentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" style="width:800px">
+			<div class="modal-content">
+				<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 class="modal-title text-center">学生信息修改</h3>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" id="studentInfoForm" style="margin:30px">
+								<div class="form-group">
+									<div class="col-sm-4 control-label">姓名：</div>
+									<div class="col-sm-5" style="margin-top:7px">
+									{{stuInfo.name}}
+									</div>
+								</div>
+						 		<div class="form-group">
+									<div class="col-sm-4 control-label">学号：</div>
+									<div class="col-sm-5" style="margin-top:7px">
+										{{stuInfo.num}}
+									</div>
+								</div>
+								 <div class="form-group" >
+									<div class="col-md-4 control-label">班级：</div>
+								 	<div class="col-md-5" style="margin-top:7px">
+								 		{{stuInfo.gradeText}}
+								 	</div>
+								 </div>
+								
+								<div class="form-group">
+									<div class="col-sm-4 control-label">新密码：</div>
+									<div class="col-sm-5">
+										<input type="password" class="form-control" name="password" v-model ="stuInfo.password" placeholder="请输入密码"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-4 control-label">确认密码：</div>
+									<div class="col-sm-5">
+										<input type="password" class="form-control" name="confirmPsw" placeholder="请再输入一遍密码"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-4 control-label">电话：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="phone" v-model ="stuInfo.phone" />
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-4 control-label">邮箱：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="mail" v-model ="stuInfo.mail" placeholder="请输入邮箱"/>
+									</div>
+								</div>		
+					</form>	
+					<div style="text-align: center;" id="modalFoot" >
+	                       <button type="button" class="btn btn-primary" @click="submitStudent" >提交</button>
+	                       <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-left:30px">取消</button>
+					</div>
 				</div>
 			</div>
 			<!-- /.modal-content -->
@@ -139,7 +204,7 @@ var ID = "";//当前行的id
 var vm = new Vue({
     el:'#teacherVue',
     data:{
-    	name:"",
+    	stuInfo:{},
     	job:{},
     	grades:[],
     	subjects:[]
@@ -175,9 +240,37 @@ var vm = new Vue({
     		        }
     		    });
     	},
+    	submitStudent : function(){
+    		//表单校验
+    		if(!onsubmitFn()){
+    			return ;
+    		}
+    		var url = baseUrl+"/student/update";
+    		$.ajax({
+    		        type: "POST",
+    		        url: url,
+    		        data : vm.stuInfo ,
+    		        dataType:"json",
+    		        success: function(resultData){
+    					if(resultData.state==0){//保存成功
+    						$("#studentModal").modal("hide");
+    						layer.msg('保存成功', {
+  							  icon: 1,
+  							});
+    					 }else{
+    						layer.msg('保存失败，请重新提交', {
+    							  icon: 0,
+    							});
+    					 }           	 
+    		        }
+    		    });
+    	},
+    	
     	//更新个人信息
     	updateUserInfo :function(){
     		console.log("更新");
+    		$("#studentModal").modal();
+    		//$('#studentInfoForm')[0].reset();
     	}
     },
     mounted: function () {
@@ -188,12 +281,14 @@ var vm = new Vue({
     	initStuClass();
     	//初始化科目信息
     	initSubject();
-    	//获取当前用户信息
-    	initUser();
+    	// 获取当前学生用户信息
+    	queryStudent();
+    	//表单校验
+    	validateForm();
       }
 });
-/* 初始化个人信息 */
-function initUser(){
+/* 获取当前学生用户信息 */
+function queryStudent(){
 	var url = baseUrl+"/student/queryUserByStuNum";
 	 $.ajax({
        type: "POST",
@@ -204,7 +299,13 @@ function initUser(){
        dataType:"json",
        success: function(resultData){
 			if(resultData.state==0){//查询成功
-				vm.name = resultData.data.name;
+				vm.stuInfo = resultData.data
+				for (var i = 0; i < vm.grades.length; i++) {
+					if(vm.grades[i].value == vm.stuInfo.grade){
+						vm.stuInfo.gradeText = vm.grades[i].text;
+						break;
+					}
+				}
 			 }else{
 				 //查询失败
 				 layer.msg(resultData.message, {
@@ -408,6 +509,77 @@ function getUrlParam(){
        }   
     }   
     return theRequest;   
+}
+
+
+//表单提交前再进行一次验证
+function onsubmitFn() {
+  var bootstrapValidator = $("#studentInfoForm").data("bootstrapValidator");
+  bootstrapValidator.validate();
+  return bootstrapValidator.isValid();
+}
+//表单验证
+function validateForm(){
+	$("#studentInfoForm").bootstrapValidator({
+	    message: 'This value is not valid',
+	    feedbackIcons: {
+	        valid: 'glyphicon glyphicon-ok',
+	        invalid: 'glyphicon glyphicon-remove',
+	        validating: 'glyphicon glyphicon-refresh'
+	    },
+	    fields: {
+	        password: {
+	        	message: "密码校验失败",
+	        	validators: {
+	        		notEmpty: {
+	        			message: "密码不能为空"
+	        		},
+	        		stringLength: {//检测长度  
+                      min: 6,  
+                      max: 30,  
+                      message: '密码长度必须在6-30之间'  
+                  },
+	        	}
+	        },
+	        confirmPsw: {
+	            message: "验证密码失败",
+	            validators: {
+	            	notEmpty: {
+	        			message: "密码输入不一致"
+	        		},
+	                identical: {//与指定控件内容比较是否相同，比如两次密码不一致  
+                      field: 'password',//指定控件name  
+                      message: '密码输入不一致'  
+                  }, 
+	            }
+	        },
+	       
+	        phone: {
+	            message: "手机号码校验失败",
+	            validators: {
+	            	notEmpty: {
+	                    message: "手机号不能为空"
+	                },
+	                regexp: {//正则验证  
+                      regexp: /^[1][3,4,5,7,8][0-9]{9}$/,  
+                      message: '请输入正确的手机号码'  
+                  }, 
+	            }
+	        },
+	        mail: {
+	            message: "邮箱校验失败",
+	            validators: {
+	            	notEmpty: {
+	                    message: "邮箱不能为空"
+	                },
+	            	emailAddress: {//验证email地址  
+                      message: '请输入正确的邮箱地址'  
+                  },  
+	            }
+	        },
+	    }
+	});
+
 }
 </script>
 </html>
