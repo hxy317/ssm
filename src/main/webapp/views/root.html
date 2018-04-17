@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <link rel="shortcut icon" href="/SSMall/images/head.jpeg" type="image/x-icon">
 <link href="/SSMall/styles/bootstrap/bootstrap.min.css" rel="stylesheet">
+<link href="/SSMall/styles/radio/magic-check.css" rel="stylesheet">
 <link href="/SSMall/styles/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
 <link href="/SSMall/styles/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
 <link href="/SSMall/js/layer/skin/default/layer.css" rel="stylesheet" id="layuicss-skinlayercss"></head>
@@ -17,6 +18,7 @@
 <script type="text/javascript" src="/SSMall/js/layer/layer.js"></script>
 <script type="text/javascript" src="/SSMall/js/vue.js"></script>
 <script type="text/javascript" src="/SSMall/js/common.js"></script>
+<script type="text/javascript" src="/SSMall/js/root.js"></script>
 <title>管理员</title>
 <style type="text/css">
 	
@@ -82,7 +84,7 @@
 									<input type="text" class="form-control" name="className" />
 								 </div>
 								 <button type="button" class="btn btn-primary" @click="classSearch" >搜索</button>
-								 <button type="button" class="btn btn-success" @click="classAdd" style="float:right">新增</button>
+								 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#classModal" @click="classAdd" style="float:right">新增</button>
 							</div>
 						</form>
 						<table id="classTable" data-classes="table table-hover" 
@@ -97,7 +99,7 @@
 									<th data-field="className">班级名称</th>
 									<th data-field="teacherNum">教师工号</th>
 									<!-- <th data-field="teacherName">教师姓名</th> -->
-									<th data-field="id">操作</th>
+									<th data-formatter="classFormatter" >操作</th>
 								</tr>
 							</thead>
 						</table>
@@ -114,7 +116,7 @@
 									<input type="text" class="form-control" name="subName" />
 								 </div>
 								 <button type="button" class="btn btn-primary" @click="subjectSearch" >搜索</button>
-								 <button type="button" class="btn btn-success" @click="subjectAdd" style="float:right">新增</button>
+								 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#subjectModal" @click="subjectAdd" style="float:right">新增</button>
 							</div>
 						</form>
 						<table id="subjectTable" data-classes="table table-hover" 
@@ -128,8 +130,7 @@
 									<th data-field="subNum">课程编号</th>
 									<th data-field="subName">课程名称</th>
 									<th data-field="teacherNum">教师工号</th>
-									<!-- <th data-field="teacherName">教师姓名</th> -->
-									<th data-field="id">操作</th>
+									<th data-formatter="subjectFormatter" >操作</th>
 								</tr>
 							</thead>
 						</table>
@@ -158,7 +159,7 @@
 									<input type="text" class="form-control" name="phone" />
 								 </div>
 								 <button type="button" class="btn btn-primary" @click="studentSearch" >搜索</button>
-								 <button type="button" class="btn btn-success" @click="studentAdd" style="float:right">新增</button>
+								 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#studentModal" @click="studentAdd" style="float:right">新增</button>
 							</div>
 						</form>
 						<table id="studentTable" data-classes="table table-hover" 
@@ -175,7 +176,7 @@
 									<th data-field="sex">性别</th>
 									<th data-field="phone">电话</th>
 									<th data-field="mail">邮箱</th>
-									<th data-field="id">操作</th>
+									<th data-formatter="studentFormatter" >操作</th>
 									
 								</tr>
 							</thead>
@@ -197,7 +198,7 @@
 									<input type="text" class="form-control" name="phone" />
 								 </div>
 								 <button type="button" class="btn btn-primary" @click="teacherSearch" >搜索</button>
-								 <button type="button" class="btn btn-success" @click="teacherAdd" style="float:right">新增</button>
+								 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#teacherModal" @click="teacherAdd" style="float:right">新增</button>
 							</div>
 						</form>
 						<table id="teacherTable" data-classes="table table-hover" 
@@ -213,7 +214,7 @@
 									<th data-field="sex">性别</th>
 									<th data-field="phone">电话</th>
 									<th data-field="mail">邮箱</th>
-									<th data-field="id">操作</th>
+									<th data-formatter="teacherFormatter" >操作</th>
 								</tr>
 							</thead>
 						</table>
@@ -222,6 +223,224 @@
 		</div>
 	</div>
 
+
+	<!-- 教师模态框 -->
+	<div class="modal fade" id="teacherModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" style="width:800px">
+			<div class="modal-content">
+				<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 class="modal-title text-center" id="title">教师编辑</h3>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" id="teacherForm" style="margin:30px">
+						 	<div class="form-group">
+										<div class="col-sm-4 control-label">学号：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="num" v-model ="teacher.num" placeholder="请输入学号"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-4 control-label">密码：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="password" v-model ="teacher.password" placeholder="请输入密码"/>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-sm-4 control-label">姓名：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="name" v-model ="teacher.name" placeholder="请输入用户姓名"/>
+									</div>
+								</div>	
+								<div class="form-group">
+									<div class="col-sm-4 control-label">性别：</div>
+									<div class="col-sm-5" style="margin-top:5px;">
+										<div class="opt" style="float: left;">
+											<input class="magic-radio" type="radio" name="radio2" id="r1" value="m" checked  >
+											<label for="r1">男</label>
+										</div>
+										<div class="opt" style="float: left;margin-left:30px;">
+											<input class="magic-radio" type="radio" name="radio2" id="r2" value="f" >
+											<label for="r2">女</label>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-4 control-label">电话：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="phone" v-model ="teacher.phone" placeholder="请输入电话"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-4 control-label">邮箱：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="mail" v-model ="teacher.mail" placeholder="请输入邮箱"/>
+									</div>
+								</div>	
+					</form>	
+					<div style="text-align: center;" >
+	                       <button type="button" class="btn btn-primary" @click="teacherSubmit" >提交</button>
+	                       <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-left:30px">取消</button>
+					</div>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+	</div>
+
+	<!-- 学生模态框 -->
+	<div class="modal fade" id="studentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" style="width:800px">
+			<div class="modal-content">
+				<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 class="modal-title text-center" id="title">学生编辑</h3>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" id="studentForm" style="margin:30px">
+						 	<div class="form-group">
+										<div class="col-sm-4 control-label">学号：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="num" v-model ="student.num" placeholder="请输入学号"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-4 control-label">密码：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="password" v-model ="student.password" placeholder="请输入密码"/>
+									</div>
+								</div>
+								
+								<div class="form-group" id="student">
+									<div class="col-md-4 control-label">班级：</div>
+								 	<div class="col-md-5">
+								 		<select class="form-control" v-model="student.grade">  
+										  <option v-for="grade in grades" v-bind:value="grade.value">  
+										    {{ grade.text }}  
+										  </option>  
+										</select> 
+								 	</div>
+								 </div>
+								
+								<div class="form-group">
+									<div class="col-sm-4 control-label">姓名：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="name" v-model ="student.name" placeholder="请输入用户姓名"/>
+									</div>
+								</div>	
+								<div class="form-group">
+									<div class="col-sm-4 control-label">性别：</div>
+									<div class="col-sm-5" style="margin-top:5px;">
+										<div class="opt" style="float: left;">
+											<input class="magic-radio" type="radio" name="radio1" id="r1" value="m" checked  >
+											<label for="r1">男</label>
+										</div>
+										<div class="opt" style="float: left;margin-left:30px;">
+											<input class="magic-radio" type="radio" name="radio1" id="r2" value="f" >
+											<label for="r2">女</label>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-4 control-label">电话：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="phone" v-model ="student.phone" placeholder="请输入电话"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-4 control-label">邮箱：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="mail" v-model ="student.mail" placeholder="请输入邮箱"/>
+									</div>
+								</div>	
+					</form>	
+					<div style="text-align: center;" >
+	                       <button type="button" class="btn btn-primary" @click="studentSubmit" >提交</button>
+	                       <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-left:30px">取消</button>
+					</div>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+	</div>
+	<!-- 课程模态框 -->
+	<div class="modal fade" id="subjectModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" style="width:800px">
+			<div class="modal-content">
+				<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 class="modal-title text-center" id="title">课程编辑</h3>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" id="subjectForm" style="margin:30px">
+						 	<div class="form-group">
+									<div class="col-sm-4 control-label">课程编号：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="subjectNum" v-model ="subject.subNum" placeholder="请输入班级编号"/>
+									</div>
+							</div>
+							<div class="form-group">
+									<div class="col-sm-4 control-label">课程名称：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="subjectName" v-model ="subject.subName" placeholder="请输入班级名称"/>
+									</div>
+							</div>	
+							<div class="form-group">
+									<div class="col-sm-4 control-label">教师工号：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="teacherNum" v-model ="subject.teacherNum" placeholder="请输入教师工号"/>
+									</div>
+							</div>		
+					</form>	
+					<div style="text-align: center;" >
+	                       <button type="button" class="btn btn-primary" @click="subjectSubmit" >提交</button>
+	                       <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-left:30px">取消</button>
+					</div>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+	</div>
+	<!-- 班级模态框 -->
+	<div class="modal fade" id="classModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" style="width:800px">
+			<div class="modal-content">
+				<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 class="modal-title text-center" id="title">班级编辑</h3>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" id="classForm" style="margin:30px">
+						 	<div class="form-group">
+									<div class="col-sm-4 control-label">班级编号：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="classNum" v-model ="clazz.classNum" placeholder="请输入班级编号"/>
+									</div>
+							</div>
+							<div class="form-group">
+									<div class="col-sm-4 control-label">班级名称：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="className" v-model ="clazz.className" placeholder="请输入班级名称"/>
+									</div>
+							</div>	
+							<div class="form-group">
+									<div class="col-sm-4 control-label">教师工号：</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" name="teacherNum" v-model ="clazz.teacherNum" placeholder="请输入教师工号"/>
+									</div>
+							</div>		
+					</form>	
+					<div style="text-align: center;" >
+	                       <button type="button" class="btn btn-primary" @click="classSubmit" >提交</button>
+	                       <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-left:30px">取消</button>
+					</div>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+	</div>
+	
 </div>
 </body>
 <script type="text/javascript">
@@ -229,8 +448,11 @@ var baseUrl = "http://localhost:8080/SSMall";
 var vm = new Vue({
     el:'#rootVue',
     data:{
-    	stuInfo:{},
-    	job:{},
+    	job:{},//公共信息
+    	clazz:{},
+    	subject:{},
+    	student:{},
+    	teacher:{},
     	grades:[],
     	subjects:[]
     },
@@ -238,68 +460,142 @@ var vm = new Vue({
     	classSearch :function(){
     		$("#classTable").bootstrapTable('refresh');
     	},
-    	subjectSearch :function(){
-    		$("#subjectTable").bootstrapTable('refresh');
-    	},
-    	studentSearch :function(){
-    		$("#studentTable").bootstrapTable('refresh');
-    	},
-    	teacherSearch :function(){
-    		$("#teacherTable").bootstrapTable('refresh');
-    	},
     	classAdd :function(){
-    		
+    		vm.clazz = {};
     	},
-    	subjectAdd :function(){
-    		
-    	},
-		studentAdd :function(){
-    		
-    	},
-    	teacherAdd :function(){
-    		
-    	},
-    	submit :function(){
-    		var answers = pacageData();
-    		var param = {};
-    		param.answer = answers;
-    		param.id = ID;
-    		param.state = "2";
-    		var url = baseUrl+"/working/updateAnswser";
+    	classSubmit :function(){
+    		/* if(!classSubmitFn()){
+    			return ;
+    		} */
+    		var url = "";
+    		var id = vm.clazz.id
+    		if(id !=null&&id!=""){
+    			url = baseUrl+"/class/updateClass";
+    		}else{
+    			url = baseUrl+"/class/addClass";
+    		}
     		$.ajax({
     		        type: "POST",
     		        url: url,
-    		        data : param ,
+    		        data : vm.clazz ,
     		        dataType:"json",
     		        success: function(resultData){
     					if(resultData.state==0){//保存成功
-    						$("#workingModal").modal("hide");
-    						$("#table").bootstrapTable('refresh');
+    						$("#classModal").modal("hide");
+    						$("#classTable").bootstrapTable('refresh');
     						layer.msg('保存成功', {
   							  icon: 1,
   							});
     					 }else{
-    						layer.msg('注册失败，请重新提交', {
+    						layer.msg('保存失败，请重新提交', {
     							  icon: 0,
     							});
     					 }           	 
     		        }
     		    });
     	},
-    	submitStudent : function(){
-    		//表单校验
-    		if(!onsubmitFn()){
+    	subjectSearch :function(){
+    		$("#subjectTable").bootstrapTable('refresh');
+    	},
+    	subjectAdd :function(){
+    		vm.subject = {};
+    	},
+    	subjectSubmit :function(){
+    		/* if(!subjectSubmitFn()){
     			return ;
+    		} */
+    		var url = "";
+    		var id = vm.subject.id
+    		if(id !=null&&id!=""){
+    			url = baseUrl+"/subject/updateSubject";
+    		}else{
+    			url = baseUrl+"/subject/addSubject";
     		}
-    		var url = baseUrl+"/student/update";
     		$.ajax({
     		        type: "POST",
     		        url: url,
-    		        data : vm.stuInfo ,
+    		        data : vm.subject,
+    		        dataType:"json",
+    		        success: function(resultData){
+    					if(resultData.state==0){//保存成功
+    						$("#subjectModal").modal("hide");
+    						$("#subjectTable").bootstrapTable('refresh');
+    						layer.msg('保存成功', {
+  							  icon: 1,
+  							});
+    					 }else{
+    						layer.msg('保存失败，请重新提交', {
+    							  icon: 0,
+    							});
+    					 }           	 
+    		        }
+    		    });
+    	},
+    	studentSearch :function(){
+    		$("#studentTable").bootstrapTable('refresh');
+    	},
+		studentAdd :function(){
+			vm.student = {};
+    	},
+    	studentSubmit :function(){
+    		/* if(!subjectSubmitFn()){
+    			return ;
+    		} */
+    		vm.student.sex = $("input[name='radio1']:checked").val();
+    		var url = "";
+    		var id = vm.student.id
+    		if(id !=null&&id!=""){
+    			url = baseUrl+"/student/updateStudent";
+    		}else{
+    			url = baseUrl+"/student/addStudent";
+    		}
+    		$.ajax({
+    		        type: "POST",
+    		        url: url,
+    		        data : vm.student,
     		        dataType:"json",
     		        success: function(resultData){
     					if(resultData.state==0){//保存成功
     						$("#studentModal").modal("hide");
+    						$("#studentTable").bootstrapTable('refresh');
+    						layer.msg('保存成功', {
+  							  icon: 1,
+  							});
+    					 }else{
+    						layer.msg('保存失败，请重新提交', {
+    							  icon: 0,
+    							});
+    					 }           	 
+    		        }
+    		    });
+    	},
+    	teacherSearch :function(){
+    		$("#teacherTable").bootstrapTable('refresh');
+    	},
+    	teacherAdd :function(){
+    		vm.teacher = {};
+    	},
+    	teacherSubmit :function(){
+    		/* if(!subjectSubmitFn()){
+    			return ;
+    		} */
+    		vm.teacher.sex = $("input[name='radio2']:checked").val();
+    		var url = "";
+    		var id = vm.teacher.id
+    		if(id !=null&&id!=""){
+    			url = baseUrl+"/teacher/updateTeacher";
+    		}else{
+    			url = baseUrl+"/teacher/addTeacher";
+    		}
+    		$.ajax({
+    		        type: "POST",
+    		        url: url,
+    		        data : vm.teacher,
+    		        dataType:"json",
+    		        success: function(resultData){
+    					if(resultData.state==0){//保存成功
+    						$("#teacherModal").modal("hide");
+    						$("#teacherTable").bootstrapTable('refresh');
     						layer.msg('保存成功', {
   							  icon: 1,
   							});
@@ -311,7 +607,6 @@ var vm = new Vue({
     		        }
     		    });
     	}
-    	
     },
     mounted: function () {
     	$(window).resize(function() {
@@ -322,9 +617,229 @@ var vm = new Vue({
     	//初始化科目信息
     	initSubject();
     	//表单校验
-    	validateForm();
+    	/* classValidate();
+    	subjectValidate(); */
       }
 });
+/* -------------------------------------------------------------教师--------------------------------------------------- */
+
+//教师操作
+function teacherFormatter(value, row, index){
+	var itemDetial = '<a class="btn btn-xs " onclick="editTeacher(\'' 
+		+ row.id+ '\',\'' 
+	    + row.num+ '\',\'' 
+		+ row.password + '\',\''
+		+ row.name+ '\',\'' 
+		+ row.sex + '\',\''
+		+ row.phone + '\',\''
+		+ row.mail
+		+ '\')"title="修改"><span class="glyphicon glyphicon glyphicon-search" data-toggle="modal" data-target="#teacherModal"></span></a>';
+	var deleteItem = '<a style="color:red;" class="btn btn-xs " onclick="deleteTeacher(\'' + row.id
+			+ '\')" title="删除"><span class="glyphicon glyphicon-trash"></span></a>';
+	
+	return itemDetial +"&emsp;&emsp;&emsp;"+ deleteItem;
+}
+/* 教师修改 */
+function editTeacher(id,num,password,name,sex,phone,mail){
+	var rows={
+			id : id,
+			num : num,
+			password : password,
+			name : name,
+			sex : sex,
+			phone : phone,
+			mail : mail
+	}
+	vm.teacher = rows;
+}
+/* 教师删除 */
+function deleteTeacher(id){
+	var url = baseUrl+"/teacher/deleteTeacher";
+	layer.confirm('确定删除么?', function() {
+		$.ajax({
+	        type: "POST",
+	        url: url,
+	        data : {
+	        	id : id
+	        } ,
+	        dataType:"json",
+	        success: function(resultData){
+				if(resultData.state==0){//保存成功
+					$("#teacherTable").bootstrapTable('refresh');
+					layer.msg('删除成功', {
+						  icon: 1,
+						});
+				 }else{
+					layer.msg('删除失败', {
+						  icon: 0,
+						});
+				 }           	 
+	        }
+	    });
+	});
+}
+/* -------------------------------------------------------------学生--------------------------------------------------- */
+
+//学生操作
+function studentFormatter(value, row, index){
+	var itemDetial = '<a class="btn btn-xs " onclick="editStudent(\'' 
+		+ row.id+ '\',\'' 
+	    + row.num+ '\',\'' 
+		+ row.password + '\',\''
+		+ row.grade+ '\',\'' 
+		+ row.name+ '\',\'' 
+		+ row.sex + '\',\''
+		+ row.phone + '\',\''
+		+ row.mail
+		+ '\')"title="修改"><span class="glyphicon glyphicon glyphicon-search" data-toggle="modal" data-target="#studentModal"></span></a>';
+	var deleteItem = '<a style="color:red;" class="btn btn-xs " onclick="deleteStudent(\'' + row.id
+			+ '\')" title="删除"><span class="glyphicon glyphicon-trash"></span></a>';
+	
+	return itemDetial +"&emsp;&emsp;&emsp;"+ deleteItem;
+}
+/* 学生修改 */
+function editStudent(id,num,password,grade,name,sex,phone,mail){
+	var rows={
+			id : id,
+			num : num,
+			password : password,
+			grade : grade,
+			name : name,
+			sex : sex,
+			phone : phone,
+			mail : mail
+	}
+	vm.student = rows;
+}
+/* 学生删除 */
+function deleteStudent(id){
+	var url = baseUrl+"/student/deleteStudent";
+	layer.confirm('确定删除么?', function() {
+		$.ajax({
+	        type: "POST",
+	        url: url,
+	        data : {
+	        	id : id
+	        } ,
+	        dataType:"json",
+	        success: function(resultData){
+				if(resultData.state==0){//保存成功
+					$("#studentTable").bootstrapTable('refresh');
+					layer.msg('删除成功', {
+						  icon: 1,
+						});
+				 }else{
+					layer.msg('删除失败', {
+						  icon: 0,
+						});
+				 }           	 
+	        }
+	    });
+	});
+}
+
+/* -------------------------------------------------------------班级--------------------------------------------------- */
+//班级操作
+function classFormatter(value, row, index){
+	var itemDetial = '<a class="btn btn-xs " onclick="editClass(\'' 
+		+ row.id+ '\',\'' 
+	    + row.classNum+ '\',\'' 
+		+ row.className + '\',\''
+		+ row.teacherNum
+		+ '\')"title="修改"><span class="glyphicon glyphicon glyphicon-search" data-toggle="modal" data-target="#classModal"></span></a>';
+	var deleteItem = '<a style="color:red;" class="btn btn-xs " onclick="deleteClass(\'' + row.id
+			+ '\')" title="删除"><span class="glyphicon glyphicon-trash"></span></a>';
+	
+	return itemDetial +"&emsp;&emsp;&emsp;"+ deleteItem;
+}
+/* 班级修改 */
+function editClass(id,classNum,className,teacherNum){
+	var rows={
+			id : id,
+			className : className,
+			classNum : classNum,
+			teacherNum : teacherNum
+	}
+	vm.clazz = rows;
+}
+/* 班级删除 */
+function deleteClass(id){
+	var url = baseUrl+"/class/deleteClass";
+	layer.confirm('确定删除么?', function() {
+		$.ajax({
+	        type: "POST",
+	        url: url,
+	        data : {
+	        	id : id
+	        } ,
+	        dataType:"json",
+	        success: function(resultData){
+				if(resultData.state==0){//保存成功
+					$("#classTable").bootstrapTable('refresh');
+					layer.msg('删除成功', {
+						  icon: 1,
+						});
+				 }else{
+					layer.msg('删除失败', {
+						  icon: 0,
+						});
+				 }           	 
+	        }
+	    });
+	});
+}
+/* -------------------------------------------------------------课程--------------------------------------------------- */
+//课程操作
+function subjectFormatter(value, row, index){
+	var itemDetial = '<a class="btn btn-xs " onclick="editSubject(\'' 
+		+ row.id+ '\',\'' 
+	    + row.subNum+ '\',\'' 
+		+ row.subName + '\',\''
+		+ row.teacherNum
+		+ '\')"title="修改"><span class="glyphicon glyphicon glyphicon-search" data-toggle="modal" data-target="#subjectModal"></span></a>';
+	var deleteItem = '<a style="color:red;" class="btn btn-xs " onclick="deleteSubject(\'' + row.id
+			+ '\')" title="删除"><span class="glyphicon glyphicon-trash"></span></a>';
+	
+	return itemDetial +"&emsp;&emsp;&emsp;"+ deleteItem;
+}
+
+/* 课程修改 */
+function editSubject(id,subNum,subName,teacherNum){
+	var rows={
+			id : id,
+			subNum : subNum,
+			subName : subName,
+			teacherNum : teacherNum
+	}
+	vm.subject = rows;
+}
+/* 课程删除 */
+function deleteSubject(id){
+	var url = baseUrl+"/subject/deleteSubject";
+	layer.confirm('确定删除么?', function() {
+		$.ajax({
+	        type: "POST",
+	        url: url,
+	        data : {
+	        	id : id
+	        } ,
+	        dataType:"json",
+	        success: function(resultData){
+				if(resultData.state==0){
+					$("#subjectTable").bootstrapTable('refresh');
+					layer.msg('删除成功', {
+						  icon: 1,
+						});
+				 }else{
+					layer.msg('删除失败', {
+						  icon: 0,
+						});
+				 }           	 
+	        }
+	    });
+	});
+}
+
 /* 初始化班级信息 */
 function initStuClass(){
 	var url = baseUrl+"/class/list";
@@ -398,124 +913,6 @@ function initSubject(){
 function rowNoFormatter(value, row, index){
 	var options = $("#classTable").bootstrapTable('getOptions');  
     return options.pageSize * (options.pageNumber - 1) + index + 1;
-}
-//作业详情
-function questionFormatter(value, row, index){
-	return [ "<a href='javascript:void(0)' onclick='workingInfo(\""+row.id+"\",\""+row.title+"\",\""+row.state+"\",\""+row.question+"\",\""+row.answer+"\",\""+row.grade+"\" )' class='btn btn-xs ' title='查看'>查看</a>" ].join('');
-}
-
-//表单提交前再进行一次验证
-function onsubmitFn() {
-  var bootstrapValidator = $("#studentInfoForm").data("bootstrapValidator");
-  bootstrapValidator.validate();
-  return bootstrapValidator.isValid();
-}
-//表单验证
-function validateForm(){
-	$("#studentInfoForm").bootstrapValidator({
-	    message: 'This value is not valid',
-	    feedbackIcons: {
-	        valid: 'glyphicon glyphicon-ok',
-	        invalid: 'glyphicon glyphicon-remove',
-	        validating: 'glyphicon glyphicon-refresh'
-	    },
-	    fields: {
-	        password: {
-	        	message: "密码校验失败",
-	        	validators: {
-	        		notEmpty: {
-	        			message: "密码不能为空"
-	        		},
-	        		stringLength: {//检测长度  
-                      min: 6,  
-                      max: 30,  
-                      message: '密码长度必须在6-30之间'  
-                  },
-	        	}
-	        },
-	        confirmPsw: {
-	            message: "验证密码失败",
-	            validators: {
-	            	notEmpty: {
-	        			message: "密码输入不一致"
-	        		},
-	                identical: {//与指定控件内容比较是否相同，比如两次密码不一致  
-                      field: 'password',//指定控件name  
-                      message: '密码输入不一致'  
-                  }, 
-	            }
-	        },
-	       
-	        phone: {
-	            message: "手机号码校验失败",
-	            validators: {
-	            	notEmpty: {
-	                    message: "手机号不能为空"
-	                },
-	                regexp: {//正则验证  
-                      regexp: /^[1][3,4,5,7,8][0-9]{9}$/,  
-                      message: '请输入正确的手机号码'  
-                  }, 
-	            }
-	        },
-	        mail: {
-	            message: "邮箱校验失败",
-	            validators: {
-	            	notEmpty: {
-	                    message: "邮箱不能为空"
-	                },
-	            	emailAddress: {//验证email地址  
-                      message: '请输入正确的邮箱地址'  
-                  },  
-	            }
-	        },
-	    }
-	});
-
-}
-//封装班级列表参数
-function queryClassParams(params) {
-	var query = $("#searchClassForm").serializeJSON();
-	query["pageNumber"] = params.pageNumber;
-	query["pageSize"] = params.pageSize;
-	if (params.sortName) {
-		query["sortName"] = params.sortName;
-		query["sortOrder"] = params.sortOrder;
-	}
-	return query;
-}
-//封装课程列表参数
-function querySubjectParams(params) {
-	var query = $("#searchSubjectForm").serializeJSON();
-	query["pageNumber"] = params.pageNumber;
-	query["pageSize"] = params.pageSize;
-	if (params.sortName) {
-		query["sortName"] = params.sortName;
-		query["sortOrder"] = params.sortOrder;
-	}
-	return query;
-}
-//封装班级列表参数
-function queryStudentParams(params) {
-	var query = $("#searchStudentForm").serializeJSON();
-	query["pageNumber"] = params.pageNumber;
-	query["pageSize"] = params.pageSize;
-	if (params.sortName) {
-		query["sortName"] = params.sortName;
-		query["sortOrder"] = params.sortOrder;
-	}
-	return query;
-}
-//封装班级列表参数
-function queryTeacherParams(params) {
-	var query = $("#searchTeacherForm").serializeJSON();
-	query["pageNumber"] = params.pageNumber;
-	query["pageSize"] = params.pageSize;
-	if (params.sortName) {
-		query["sortName"] = params.sortName;
-		query["sortOrder"] = params.sortOrder;
-	}
-	return query;
 }
 </script>
 </html>

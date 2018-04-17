@@ -124,9 +124,9 @@ var vm = new Vue({
     		var user = $("#user").val();
     		var url;
     		if(user=="1"){//为学生
-    			url = baseUrl+"/user/stuRegister";
+    			url = baseUrl+"/student/addStudent";
     		}else{//为教师
-    			url = baseUrl+"/user/teaRegister";
+    			url = baseUrl+"/teacher/addTeacher";
     		}
 	   		$.ajax({
 	   	        type: "POST",

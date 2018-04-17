@@ -105,8 +105,6 @@
 						<th data-field="state" data-formatter="stateFormatter">作业状态</th>
 						<th data-field="stuName">学生姓名</th>
 						<th data-field="question" data-formatter="questionFormatter">题目</th>
-						<th data-field="answer">答案</th>
-						
 					</tr>
 				</thead>
 			</table>
@@ -250,7 +248,7 @@ var vm = new Vue({
     		if(!onsubmitFn()){
     			return ;
     		}
-    		var url = baseUrl+"/teacher/update";
+    		var url = baseUrl+"/teacher/updateTeacher";
     		$.ajax({
     		        type: "POST",
     		        url: url,
