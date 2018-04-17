@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.working.entity.Class;
 import com.working.entity.Subject;
 import com.working.service.SubjectService;
 import com.working.util.TableData;
@@ -52,6 +51,7 @@ public class SubjectController {
         return resultMap;
         
     }
+    
     /**
      * 课程列表查询
      * 
@@ -87,11 +87,11 @@ public class SubjectController {
             Subject subject = new Subject();
             String subName = request.getParameter("subName");
             if (subName != null) {
-            	subject.setSubName(subName);
+                subject.setSubName(subName);
             }
             String teacherNum = request.getParameter("teacherNum");
             if (teacherNum != null) {
-            	subject.setTeacherNum(teacherNum);
+                subject.setTeacherNum(teacherNum);
             }
             String teacherName = request.getParameter("teacherName");
             if (teacherName != null) {
@@ -109,6 +109,78 @@ public class SubjectController {
             e.printStackTrace();
         }
         return TableData.bulid(0, null);
+    }
+    
+    /**
+     * 添加课程信息
+     * 
+     * @param subject subject
+     * @throws Exception e
+     */
+    @RequestMapping("/addSubject")
+    public Map<String, Object> addSubject(Subject subject) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("data", "");
+        try {
+            subjectService.insert(subject);
+            resultMap.put("message", "保存成功");
+            resultMap.put("state", 0);
+        } catch (Exception e) {
+            resultMap.put("message", "保存失败");
+            resultMap.put("state", -1);
+            e.printStackTrace();
+        }
+        return resultMap;
+    }
+    
+    /**
+     * 删除课程信息
+     * 
+     * @param request request
+     * @throws Exception e
+     */
+    @RequestMapping("/deleteSubject")
+    public Map<String, Object> deleteSubject(HttpServletRequest request) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("data", "");
+        String id = request.getParameter("id");
+        if ((id == null) || (id.isEmpty())) {
+            resultMap.put("message", "参数错误");
+            resultMap.put("state", -1);
+            return resultMap;
+        }
+        try {
+            subjectService.delete(id);
+            resultMap.put("message", "删除成功");
+            resultMap.put("state", 0);
+        } catch (Exception e) {
+            resultMap.put("message", "删除失败");
+            resultMap.put("state", -1);
+            e.printStackTrace();
+        }
+        return resultMap;
+    }
+    
+    /**
+     * 更新课程信息
+     * 
+     * @param subject subject
+     * @throws Exception e
+     */
+    @RequestMapping("/updateSubject")
+    public Map<String, Object> updateSubject(Subject subject) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("data", "");
+        try {
+            subjectService.updateIfNotNull(subject);
+            resultMap.put("message", "保存成功");
+            resultMap.put("state", 0);
+        } catch (Exception e) {
+            resultMap.put("message", "保存失败");
+            resultMap.put("state", -1);
+            e.printStackTrace();
+        }
+        return resultMap;
     }
     
 }

@@ -45,7 +45,7 @@ public class ClassController {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         List<Class> classLst = classService.selectList(new Class());
         resultMap.put("data", classLst);
-        resultMap.put("msg", "查询成功");
+        resultMap.put("message", "查询成功");
         resultMap.put("state", "0");
         
         return resultMap;
@@ -104,10 +104,82 @@ public class ClassController {
         clazz.setTeacherNum(teacherNum);
         List<Class> classLst = classService.selectList(clazz);
         resultMap.put("data", classLst);
-        resultMap.put("msg", "查询成功");
+        resultMap.put("message", "查询成功");
         resultMap.put("state", "0");
         
         return resultMap;
         
+    }
+    
+    /**
+     * 添加班级信息
+     * 
+     * @param clazz clazz
+     * @throws Exception e
+     */
+    @RequestMapping("/addClass")
+    public Map<String, Object> addClass(Class clazz) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("data", "");
+        try {
+            classService.insert(clazz);
+            resultMap.put("message", "保存成功");
+            resultMap.put("state", 0);
+        } catch (Exception e) {
+            resultMap.put("message", "保存失败");
+            resultMap.put("state", -1);
+            e.printStackTrace();
+        }
+        return resultMap;
+    }
+    
+    /**
+     * 删除班级信息
+     * 
+     * @param request request
+     * @throws Exception e
+     */
+    @RequestMapping("/deleteClass")
+    public Map<String, Object> deleteClass(HttpServletRequest request) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("data", "");
+        String id = request.getParameter("id");
+        if ((id == null) || (id.isEmpty())) {
+            resultMap.put("message", "参数错误");
+            resultMap.put("state", -1);
+            return resultMap;
+        }
+        try {
+            classService.delete(id);
+            resultMap.put("message", "删除成功");
+            resultMap.put("state", 0);
+        } catch (Exception e) {
+            resultMap.put("message", "删除失败");
+            resultMap.put("state", -1);
+            e.printStackTrace();
+        }
+        return resultMap;
+    }
+    
+    /**
+     * 更新班级信息
+     * 
+     * @param clazz clazz
+     * @throws Exception e
+     */
+    @RequestMapping("/updateClass")
+    public Map<String, Object> updateClass(Class clazz) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("data", "");
+        try {
+            classService.updateIfNotNull(clazz);
+            resultMap.put("message", "保存成功");
+            resultMap.put("state", 0);
+        } catch (Exception e) {
+            resultMap.put("message", "保存失败");
+            resultMap.put("state", -1);
+            e.printStackTrace();
+        }
+        return resultMap;
     }
 }

@@ -17,7 +17,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
 import com.working.entity.Student;
-import com.working.entity.Subject;
 import com.working.service.StudentService;
 import com.working.util.TableData;
 
@@ -65,13 +64,105 @@ public class StudentController {
     }
     
     /**
+     * 学生列表查询 分页表单显示
+     * 
+     * @param request
+     * @return
+     * @throws Exception e
+     */
+    @RequestMapping("/queryStudentList")
+    @ResponseBody
+    public TableData<Student> queryStudentList(HttpServletRequest request) {
+        try {
+            // 查询条件
+            Student student = new Student();
+            String grade = request.getParameter("grade");
+            if (grade != null) {
+                student.setGrade(grade);
+            }
+            String num = request.getParameter("num");
+            if (num != null) {
+                student.setNum(num);
+            }
+            String name = request.getParameter("name");
+            if (name != null) {
+                student.setName(name);
+            }
+            String phone = request.getParameter("phone");
+            if (phone != null) {
+                student.setPhone(phone);
+            }
+            // 分页信息
+            int pageNumber = NumberUtils.toInt(request.getParameter("pageNumber"), 1);
+            int pageSize = NumberUtils.toInt(request.getParameter("pageSize"), 10);
+            PageHelper.startPage(pageNumber, pageSize);
+            PageHelper.orderBy("num desc");
+            List<Student> studentList = studentService.selectList(student);
+            PageInfo<Student> pageInfo = new PageInfo<Student>(studentList);
+            return TableData.bulid(pageInfo.getTotal(), studentList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return TableData.bulid(0, null);
+    }
+    
+    /**
+     * 添加学生信息
+     * 
+     * @param student student
+     */
+    @RequestMapping("/addStudent")
+    public Map<String, Object> addStudent(Student student) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("data", "");
+        try {
+            studentService.insert(student);
+            resultMap.put("message", "保存成功");
+            resultMap.put("state", 0);
+        } catch (Exception e) {
+            resultMap.put("message", "保存失败");
+            resultMap.put("state", -1);
+            e.printStackTrace();
+        }
+        return resultMap;
+    }
+    
+    /**
+     * 删除学生信息
+     * 
+     * @param request request
+     */
+    @RequestMapping("/deleteStudent")
+    public Map<String, Object> deleteStudent(HttpServletRequest request) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("data", "");
+        String id = request.getParameter("id");
+        if ((id == null) || (id.isEmpty())) {
+            resultMap.put("message", "参数错误");
+            resultMap.put("state", -1);
+            return resultMap;
+        }
+        try {
+            studentService.delete(id);
+            resultMap.put("message", "删除成功");
+            resultMap.put("state", 0);
+        } catch (Exception e) {
+            resultMap.put("message", "删除失败");
+            resultMap.put("state", -1);
+            e.printStackTrace();
+        }
+        return resultMap;
+    }
+    
+    /**
      * 更新学生信息
      * 
      * @param request request参数
-     * @return Map 学生信息
+     * @param student student参数
+     * @return Map
      */
-    @RequestMapping("/update")
-    public Map<String, Object> update(Student student, HttpServletRequest request) {
+    @RequestMapping("/updateStudent")
+    public Map<String, Object> updateStudent(Student student, HttpServletRequest request) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         try {
             studentService.updateIfNotNull(student);
@@ -87,46 +178,4 @@ public class StudentController {
         return resultMap;
     }
     
-    /**
-     * 学生列表查询 分页表单显示
-     * 
-     * @param request
-     * @return
-     * @throws Exception e
-     */
-    @RequestMapping("/queryStudentList")
-    @ResponseBody
-    public TableData<Student> queryStudentList(HttpServletRequest request) {
-        try {
-            // 查询条件
-        	Student student = new Student();
-            String grade = request.getParameter("grade");
-            if (grade != null) {
-            	student.setGrade(grade);
-            }
-            String num = request.getParameter("num");
-            if (num != null) {
-            	student.setNum(num);
-            }
-            String name = request.getParameter("name");
-            if (name != null) {
-            	student.setName(name);
-            }
-            String phone = request.getParameter("phone");
-            if (phone != null) {
-            	student.setPhone(phone);
-            }
-            // 分页信息
-            int pageNumber = NumberUtils.toInt(request.getParameter("pageNumber"), 1);
-            int pageSize = NumberUtils.toInt(request.getParameter("pageSize"), 10);
-            PageHelper.startPage(pageNumber, pageSize);
-            PageHelper.orderBy("num desc");
-            List<Student> studentList = studentService.selectList(student);
-            PageInfo<Student> pageInfo = new PageInfo<Student>(studentList);
-            return TableData.bulid(pageInfo.getTotal(), studentList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return TableData.bulid(0, null);
-    }
 }
