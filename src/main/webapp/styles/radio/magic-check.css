@@ -70,8 +70,8 @@
   border-radius: 50%; }
 
 .magic-radio + label:after {
-  top: 7px;
-  left: 7px;
+  top: 6px;
+  left: 6px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
