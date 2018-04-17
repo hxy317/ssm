@@ -66,9 +66,9 @@
     	</foreach>
   	</insert>
 
-  	<update id="delete" parameterType="java.lang.String">
+  	<delete id="delete" parameterType="java.lang.String">
 		delete from student where id = #{id}
-    </update>
+    </delete>
 
   	<update id="update" parameterType="com.working.entity.Student">
 		update student set

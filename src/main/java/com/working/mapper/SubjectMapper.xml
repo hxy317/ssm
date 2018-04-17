@@ -46,14 +46,14 @@
     	</foreach>
   	</insert>
 
-  	<update id="delete" parameterType="java.lang.String">
-		update subject set is_delete=0 where id = #{id}
-    </update>
+  	<delete id="delete" parameterType="java.lang.String">
+		delete from subject where id = #{id}
+    </delete>
 
   	<update id="update" parameterType="com.working.entity.Subject">
 		update subject set
 		sub_num=#{subNum}, sub_name=#{subName}, teacher_num=#{teacherNum}
-		where id = #{id} and is_delete=1
+		where id = #{id}
 	</update>
 	
 	<update id="updateIfNotNull" parameterType="com.working.entity.Subject">
@@ -67,7 +67,7 @@
 		<if test="teacherNum != null">
 			teacher_num=#{teacherNum}
 		</if>
-		where id = #{id} and is_delete=1
+		where id = #{id}
 	</update>
 
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
