@@ -171,7 +171,7 @@
 								<tr>
 									<th data-formatter="rowNoFormatter">序号</th>
 									<th data-field="num"> 学号</th>
-									<th data-field="grade">专业班级</th>
+									<th data-field="grade" data-formatter="gradeFormatter">专业班级</th>
 									<th data-field="name">姓名</th>
 									<th data-field="sex">性别</th>
 									<th data-field="phone">电话</th>
@@ -257,12 +257,12 @@
 									<div class="col-sm-4 control-label">性别：</div>
 									<div class="col-sm-5" style="margin-top:5px;">
 										<div class="opt" style="float: left;">
-											<input class="magic-radio" type="radio" name="radio2" id="r1" value="m" checked  >
-											<label for="r1">男</label>
+											<input class="magic-radio" type="radio" name="radio2" id="r3" value="m" checked  >
+											<label for="r3">男</label>
 										</div>
 										<div class="opt" style="float: left;margin-left:30px;">
-											<input class="magic-radio" type="radio" name="radio2" id="r2" value="f" >
-											<label for="r2">女</label>
+											<input class="magic-radio" type="radio" name="radio2" id="r4" value="f" >
+											<label for="r4">女</label>
 										</div>
 									</div>
 								</div>
@@ -316,8 +316,8 @@
 									<div class="col-md-4 control-label">班级：</div>
 								 	<div class="col-md-5">
 								 		<select class="form-control" v-model="student.grade">  
-										  <option v-for="grade in grades" v-bind:value="grade.value">  
-										    {{ grade.text }}  
+										  <option v-for="formGrade in formGrades" v-bind:value="formGrade.value">  
+										    {{ formGrade.text }}  
 										  </option>  
 										</select> 
 								 	</div>
@@ -454,6 +454,7 @@ var vm = new Vue({
     	student:{},
     	teacher:{},
     	grades:[],
+    	formGrades:[],
     	subjects:[]
     },
     methods: {
@@ -464,9 +465,9 @@ var vm = new Vue({
     		vm.clazz = {};
     	},
     	classSubmit :function(){
-    		/* if(!classSubmitFn()){
+    		if(!classSubmitFn()){
     			return ;
-    		} */
+    		}
     		var url = "";
     		var id = vm.clazz.id
     		if(id !=null&&id!=""){
@@ -501,9 +502,9 @@ var vm = new Vue({
     		vm.subject = {};
     	},
     	subjectSubmit :function(){
-    		/* if(!subjectSubmitFn()){
+    		if(!subjectSubmitFn()){
     			return ;
-    		} */
+    		}
     		var url = "";
     		var id = vm.subject.id
     		if(id !=null&&id!=""){
@@ -538,9 +539,9 @@ var vm = new Vue({
 			vm.student = {};
     	},
     	studentSubmit :function(){
-    		/* if(!subjectSubmitFn()){
+    		if(!studentSubmitFn()){
     			return ;
-    		} */
+    		}
     		vm.student.sex = $("input[name='radio1']:checked").val();
     		var url = "";
     		var id = vm.student.id
@@ -576,9 +577,9 @@ var vm = new Vue({
     		vm.teacher = {};
     	},
     	teacherSubmit :function(){
-    		/* if(!subjectSubmitFn()){
+    		if(!teacherSubmitFn()){
     			return ;
-    		} */
+    		}
     		vm.teacher.sex = $("input[name='radio2']:checked").val();
     		var url = "";
     		var id = vm.teacher.id
@@ -617,8 +618,10 @@ var vm = new Vue({
     	//初始化科目信息
     	initSubject();
     	//表单校验
-    	/* classValidate();
-    	subjectValidate(); */
+    	classValidate();
+    	subjectValidate();
+    	studentValidate();
+    	teacherValidate();
       }
 });
 /* -------------------------------------------------------------教师--------------------------------------------------- */
@@ -633,7 +636,7 @@ function teacherFormatter(value, row, index){
 		+ row.sex + '\',\''
 		+ row.phone + '\',\''
 		+ row.mail
-		+ '\')"title="修改"><span class="glyphicon glyphicon glyphicon-search" data-toggle="modal" data-target="#teacherModal"></span></a>';
+		+ '\')"title="修改"><span class="glyphicon glyphicon-pencil" data-toggle="modal" data-target="#teacherModal"></span></a>';
 	var deleteItem = '<a style="color:red;" class="btn btn-xs " onclick="deleteTeacher(\'' + row.id
 			+ '\')" title="删除"><span class="glyphicon glyphicon-trash"></span></a>';
 	
@@ -646,11 +649,15 @@ function editTeacher(id,num,password,name,sex,phone,mail){
 			num : num,
 			password : password,
 			name : name,
-			sex : sex,
 			phone : phone,
 			mail : mail
 	}
 	vm.teacher = rows;
+	if(sex=="m"){
+		$("#r3").prop("checked",true);
+	}else{
+		$("#r4").prop("checked",true);
+	}
 }
 /* 教师删除 */
 function deleteTeacher(id){
@@ -691,7 +698,7 @@ function studentFormatter(value, row, index){
 		+ row.sex + '\',\''
 		+ row.phone + '\',\''
 		+ row.mail
-		+ '\')"title="修改"><span class="glyphicon glyphicon glyphicon-search" data-toggle="modal" data-target="#studentModal"></span></a>';
+		+ '\')"title="修改"><span class="glyphicon glyphicon-pencil" data-toggle="modal" data-target="#studentModal"></span></a>';
 	var deleteItem = '<a style="color:red;" class="btn btn-xs " onclick="deleteStudent(\'' + row.id
 			+ '\')" title="删除"><span class="glyphicon glyphicon-trash"></span></a>';
 	
@@ -705,11 +712,15 @@ function editStudent(id,num,password,grade,name,sex,phone,mail){
 			password : password,
 			grade : grade,
 			name : name,
-			sex : sex,
 			phone : phone,
 			mail : mail
 	}
 	vm.student = rows;
+	if(sex=="m"){
+		$("#r1").prop("checked",true);
+	}else{
+		$("#r2").prop("checked",true);
+	}
 }
 /* 学生删除 */
 function deleteStudent(id){
@@ -746,7 +757,7 @@ function classFormatter(value, row, index){
 	    + row.classNum+ '\',\'' 
 		+ row.className + '\',\''
 		+ row.teacherNum
-		+ '\')"title="修改"><span class="glyphicon glyphicon glyphicon-search" data-toggle="modal" data-target="#classModal"></span></a>';
+		+ '\')"title="修改"><span class="glyphicon glyphicon-pencil" data-toggle="modal" data-target="#classModal"></span></a>';
 	var deleteItem = '<a style="color:red;" class="btn btn-xs " onclick="deleteClass(\'' + row.id
 			+ '\')" title="删除"><span class="glyphicon glyphicon-trash"></span></a>';
 	
@@ -796,7 +807,7 @@ function subjectFormatter(value, row, index){
 	    + row.subNum+ '\',\'' 
 		+ row.subName + '\',\''
 		+ row.teacherNum
-		+ '\')"title="修改"><span class="glyphicon glyphicon glyphicon-search" data-toggle="modal" data-target="#subjectModal"></span></a>';
+		+ '\')"title="修改"><span class="glyphicon glyphicon-pencil" data-toggle="modal" data-target="#subjectModal"></span></a>';
 	var deleteItem = '<a style="color:red;" class="btn btn-xs " onclick="deleteSubject(\'' + row.id
 			+ '\')" title="删除"><span class="glyphicon glyphicon-trash"></span></a>';
 	
@@ -851,6 +862,7 @@ function initStuClass(){
         	
 			if(resultData.state==0){//查询成功
 				var options = [];
+				var forGrades = [];
 				var flag={
 						text : "全部",
 						value : ""
@@ -863,7 +875,12 @@ function initStuClass(){
 					option.text = data[i].className;
 					option.value = data[i].classNum;
 					options.push(option);
+					var forGrade = {}
+					forGrade.text = data[i].className;
+					forGrade.value = data[i].classNum;
+					forGrades.push(forGrade);
 				}
+				vm.formGrades = forGrades;
 				vm.grades = options;
 			 }else{
 				 //查询失败
@@ -907,6 +924,16 @@ function initSubject(){
 			 }           	 
         }
     });
+}
+//班级信息
+function gradeFormatter(value, row, index) {
+	var grades = vm.grades;
+	for (var i = 0; i < grades.length; i++) {
+		if(grades[i].value==value){
+			return "<span class='text-info'>"+grades[i].text+"</span>";
+		}
+	}
+	return "<span class='text-info'></span>";
 }
 //柔和灰（text-muted）、主要蓝（text-primary）、成功绿（text-success）、信息蓝（text-info）、警告黄（text-warning）、危险红（text-danger）
 //序号
