@@ -125,7 +125,7 @@ public class WorkController {
      * @return Map 保存结果
      */
     @RequestMapping("/save")
-    public Map<String, Object> stuRegister(HttpServletRequest request) {
+    public Map<String, Object> save(HttpServletRequest request) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("data", "");
         // 查询条件
